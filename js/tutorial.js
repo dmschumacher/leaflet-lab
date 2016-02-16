@@ -123,11 +123,7 @@ var geojsonMarkerOptions = {
     fillOpacity: 0.8
 };
 
-L.geoJson(someGeojsonFeature, {
-    pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, geojsonMarkerOptions);
-    }
-}).addTo(map);
+
 
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
@@ -148,6 +144,12 @@ var geojsonFeature = {
         "coordinates": [-104.99404, 39.75621]
     }
 };
+
+L.geoJson(geojsonFeature, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    }
+}).addTo(map);
 
 L.geoJson(geojsonFeature, {
     onEachFeature: onEachFeature

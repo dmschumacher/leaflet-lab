@@ -1,0 +1,965 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.438,
+        "2007": 0.25,
+        "2008": 0.688,
+        "2009": 0.563,
+        "2010": 0.813,
+        "2011": 0.625,
+        "2012": 0.813,
+        "2013": 0.25,
+        "2014": 0.375,
+        "2015": 0.5,
+        "CITY": "Atlanta",
+        "STATE": "Georgia",
+        "TEAM NAME": "Atlanta Falcons",
+        "name": "Atlanta, Georgia",
+        "desc": "Atlanta, Fulton County, GA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.390185,
+          33.749099
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.813,
+        "2007": 0.313,
+        "2008": 0.688,
+        "2009": 0.563,
+        "2010": 0.75,
+        "2011": 0.75,
+        "2012": 0.625,
+        "2013": 0.5,
+        "2014": 0.625,
+        "2015": 0.313,
+        "CITY": "Baltimore",
+        "STATE": "Maryland",
+        "TEAM NAME": "Baltimore Ravens",
+        "name": "Baltimore, Maryland",
+        "desc": "Baltimore, MD, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.610807,
+          39.290861
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.75,
+        "2007": 1,
+        "2008": 0.688,
+        "2009": 0.625,
+        "2010": 0.875,
+        "2011": 0.813,
+        "2012": 0.75,
+        "2013": 0.75,
+        "2014": 0.75,
+        "2015": 0.75,
+        "CITY": "Boston",
+        "STATE": "Massachusetts",
+        "TEAM NAME": "New England Patriots",
+        "name": "Boston, Massachusetts",
+        "desc": "Boston, Suffolk County, MA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.059568,
+          42.360482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.438,
+        "2007": 0.438,
+        "2008": 0.438,
+        "2009": 0.375,
+        "2010": 0.25,
+        "2011": 0.375,
+        "2012": 0.375,
+        "2013": 0.375,
+        "2014": 0.563,
+        "2015": 0.5,
+        "CITY": "Buffalo",
+        "STATE": "New York",
+        "TEAM NAME": "Buffalo Bills",
+        "name": "Buffalo, New York",
+        "desc": "Buffalo, Erie County, NY, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.878369,
+          42.886447
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.5,
+        "2007": 0.438,
+        "2008": 0.75,
+        "2009": 0.5,
+        "2010": 0.125,
+        "2011": 0.375,
+        "2012": 0.438,
+        "2013": 0.75,
+        "2014": 0.469,
+        "2015": 0.938,
+        "CITY": "Charlotte",
+        "STATE": "North Carolina",
+        "TEAM NAME": "Carolina Panthers",
+        "name": "Charlotte, North Carolina",
+        "desc": "Charlotte, Mecklenburg County, NC, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.843127,
+          35.227087
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.813,
+        "2007": 0.438,
+        "2008": 0.563,
+        "2009": 0.438,
+        "2010": 0.688,
+        "2011": 0.5,
+        "2012": 0.625,
+        "2013": 0.5,
+        "2014": 0.313,
+        "2015": 0.375,
+        "CITY": "Chicago",
+        "STATE": "Illinois",
+        "TEAM NAME": "Chicago Bears",
+        "name": "Chicago, Illinois",
+        "desc": "Chicago, Cook County, IL, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.624421,
+          41.875555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.5,
+        "2007": 0.438,
+        "2008": 0.281,
+        "2009": 0.625,
+        "2010": 0.25,
+        "2011": 0.563,
+        "2012": 0.625,
+        "2013": 0.688,
+        "2014": 0.656,
+        "2015": 0.75,
+        "CITY": "Cincinnati",
+        "STATE": "Ohio",
+        "TEAM NAME": "Cincinnati Bengals",
+        "name": "Cincinnati, Ohio",
+        "desc": "Cincinnati, Hamilton County, OH, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.51246,
+          39.101454
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.25,
+        "2007": 0.625,
+        "2008": 0.25,
+        "2009": 0.313,
+        "2010": 0.313,
+        "2011": 0.25,
+        "2012": 0.313,
+        "2013": 0.25,
+        "2014": 0.438,
+        "2015": 0.188,
+        "CITY": "Cleveland",
+        "STATE": "Ohio",
+        "TEAM NAME": "Cleveland Browns",
+        "name": "Cleveland, Ohio",
+        "desc": "Cleveland, Cuyahoga County, OH, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.693445,
+          41.505161
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.563,
+        "2007": 0.813,
+        "2008": 0.563,
+        "2009": 0.688,
+        "2010": 0.375,
+        "2011": 0.5,
+        "2012": 0.5,
+        "2013": 0.5,
+        "2014": 0.75,
+        "2015": 0.25,
+        "CITY": "Dallas",
+        "STATE": "Texas",
+        "TEAM NAME": "Dallas Cowboys",
+        "name": "Dallas, Texas",
+        "desc": "Dallas, Dallas County, TX, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.796856,
+          32.776272
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.563,
+        "2007": 0.438,
+        "2008": 0.5,
+        "2009": 0.5,
+        "2010": 0.25,
+        "2011": 0.5,
+        "2012": 0.813,
+        "2013": 0.813,
+        "2014": 0.75,
+        "2015": 0.75,
+        "CITY": "Denver",
+        "STATE": "Colorado",
+        "TEAM NAME": "Denver Broncos",
+        "name": "Denver, Colorado",
+        "desc": "Denver, Denver County, CO, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.984703,
+          39.739154
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.188,
+        "2007": 0.438,
+        "2008": 0,
+        "2009": 0.125,
+        "2010": 0.375,
+        "2011": 0.625,
+        "2012": 0.25,
+        "2013": 0.438,
+        "2014": 0.688,
+        "2015": 0.438,
+        "CITY": "Detroit",
+        "STATE": "Michigan",
+        "TEAM NAME": "Detroit Lions",
+        "name": "Detroit, Michigan",
+        "desc": "Detroit, Wayne County, MI, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.056737,
+          42.348664
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.75,
+        "2007": 0.813,
+        "2008": 0.75,
+        "2009": 0.875,
+        "2010": 0.625,
+        "2011": 0.125,
+        "2012": 0.688,
+        "2013": 0.688,
+        "2014": 0.688,
+        "2015": 0.5,
+        "CITY": "Indianapolis",
+        "STATE": "Indiana",
+        "TEAM NAME": "Indianapolis Colts",
+        "name": "Indianapolis, Indiana",
+        "desc": "Indianapolis, Marion County, IN, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.15835,
+          39.768333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.5,
+        "2007": 0.688,
+        "2008": 0.313,
+        "2009": 0.438,
+        "2010": 0.5,
+        "2011": 0.313,
+        "2012": 0.125,
+        "2013": 0.25,
+        "2014": 0.188,
+        "2015": 0.313,
+        "CITY": "Jacksonville",
+        "STATE": "Florida",
+        "TEAM NAME": "Jacksonville Jaguars",
+        "name": "Jacksonville, Florida",
+        "desc": "Jacksonville, Duval County, FL, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.655651,
+          30.332184
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.563,
+        "2007": 0.25,
+        "2008": 0.125,
+        "2009": 0.25,
+        "2010": 0.625,
+        "2011": 0.438,
+        "2012": 0.125,
+        "2013": 0.688,
+        "2014": 0.563,
+        "2015": 0.688,
+        "CITY": "Kansas City",
+        "STATE": "Missouri",
+        "TEAM NAME": "Kansas City Chiefs",
+        "name": "Kansas City, Missouri",
+        "desc": "Kansas City, Jackson County, MO, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -94.56303,
+          39.084469
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.375,
+        "2007": 0.063,
+        "2008": 0.688,
+        "2009": 0.438,
+        "2010": 0.438,
+        "2011": 0.375,
+        "2012": 0.438,
+        "2013": 0.5,
+        "2014": 0.5,
+        "2015": 0.375,
+        "CITY": "Miami",
+        "STATE": "Florida",
+        "TEAM NAME": "Miami Dolphins",
+        "name": "Miami, Florida",
+        "desc": "Miami, Miami-Dade County, FL, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.193659,
+          25.774266
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.5,
+        "2007": 0.813,
+        "2008": 0.375,
+        "2009": 0.688,
+        "2010": 0.625,
+        "2011": 0.938,
+        "2012": 0.688,
+        "2013": 0.531,
+        "2014": 0.75,
+        "2015": 0.625,
+        "CITY": "Green Bay",
+        "STATE": "Wisconsin",
+        "TEAM NAME": "Green Bay Packers",
+        "name": "Green Bay, Wisconsin",
+        "desc": "Green Bay, Brown County, WI, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -88.024832,
+          44.529941
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.375,
+        "2007": 0.5,
+        "2008": 0.625,
+        "2009": 0.75,
+        "2010": 0.375,
+        "2011": 0.188,
+        "2012": 0.625,
+        "2013": 0.344,
+        "2014": 0.438,
+        "2015": 0.688,
+        "CITY": "Minneapolis",
+        "STATE": "Minnesota",
+        "TEAM NAME": "Minnesota Vikings",
+        "name": "Minneapolis, Minnesota",
+        "desc": "Minneapolis, Hennepin County, MN, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -93.265469,
+          44.9773
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.5,
+        "2007": 0.625,
+        "2008": 0.813,
+        "2009": 0.5,
+        "2010": 0.375,
+        "2011": 0.563,
+        "2012": 0.375,
+        "2013": 0.438,
+        "2014": 0.125,
+        "2015": 0.188,
+        "CITY": "Nashville",
+        "STATE": "Tennessee",
+        "TEAM NAME": "Tennessee Titans",
+        "name": "Nashville, Tennessee",
+        "desc": "Nashville, Davidson County, TN, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.774353,
+          36.16223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.625,
+        "2007": 0.438,
+        "2008": 0.5,
+        "2009": 0.813,
+        "2010": 0.688,
+        "2011": 0.813,
+        "2012": 0.438,
+        "2013": 0.688,
+        "2014": 0.438,
+        "2015": 0.438,
+        "CITY": "New Orleans",
+        "STATE": "Louisiana",
+        "TEAM NAME": "New Orleans Saints",
+        "name": "New Orleans, Louisiana",
+        "desc": "New Orleans, Orleans Parish, LA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.070116,
+          29.949932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.5,
+        "2007": 0.625,
+        "2008": 0.75,
+        "2009": 0.5,
+        "2010": 0.625,
+        "2011": 0.563,
+        "2012": 0.563,
+        "2013": 0.438,
+        "2014": 0.375,
+        "2015": 0.375,
+        "CITY": "New York",
+        "STATE": "New York",
+        "TEAM NAME": "New York Giants",
+        "name": "New York, New York",
+        "desc": "New York, Tyne and Wear, England, GB",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.48695,
+          55.0253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.625,
+        "2007": 0.25,
+        "2008": 0.563,
+        "2009": 0.563,
+        "2010": 0.688,
+        "2011": 0.5,
+        "2012": 0.375,
+        "2013": 0.5,
+        "2014": 0.25,
+        "2015": 0.625,
+        "CITY": "New York",
+        "STATE": "New York",
+        "TEAM NAME": "New York Jets",
+        "name": "New York, New York",
+        "desc": "New York, Tyne and Wear, England, GB",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.48695,
+          55.0253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.125,
+        "2007": 0.25,
+        "2008": 0.313,
+        "2009": 0.313,
+        "2010": 0.5,
+        "2011": 0.5,
+        "2012": 0.25,
+        "2013": 0.25,
+        "2014": 0.188,
+        "2015": 0.438,
+        "CITY": "Oakland",
+        "STATE": "California",
+        "TEAM NAME": "Oakland Raiders",
+        "name": "Oakland, California",
+        "desc": "Oakland, Alameda County, CA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.271356,
+          37.804456
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.625,
+        "2007": 0.5,
+        "2008": 0.594,
+        "2009": 0.688,
+        "2010": 0.625,
+        "2011": 0.5,
+        "2012": 0.25,
+        "2013": 0.625,
+        "2014": 0.625,
+        "2015": 0.438,
+        "CITY": "Philadelphia",
+        "STATE": "Pennsylvania",
+        "TEAM NAME": "Philadelphia Eagles",
+        "name": "Philadelphia, Pennsylvania",
+        "desc": "Philadelphia, Philadelphia County, PA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.16359,
+          39.952399
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.313,
+        "2007": 0.5,
+        "2008": 0.563,
+        "2009": 0.625,
+        "2010": 0.313,
+        "2011": 0.5,
+        "2012": 0.313,
+        "2013": 0.625,
+        "2014": 0.688,
+        "2015": 0.813,
+        "CITY": "Phoenix",
+        "STATE": "Arizona",
+        "TEAM NAME": "Arizona Cardinals",
+        "name": "Phoenix, Arizona",
+        "desc": "Phoenix, Maricopa County, AZ, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.075672,
+          33.446768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.5,
+        "2007": 0.625,
+        "2008": 0.75,
+        "2009": 0.563,
+        "2010": 0.75,
+        "2011": 0.75,
+        "2012": 0.5,
+        "2013": 0.5,
+        "2014": 0.688,
+        "2015": 0.625,
+        "CITY": "Pittsburgh",
+        "STATE": "Pennsylvania",
+        "TEAM NAME": "Pittsburgh Steelers",
+        "name": "Pittsburgh, Pennsylvania",
+        "desc": "Pittsburgh, Allegheny County, PA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.990086,
+          40.441694
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.5,
+        "2007": 0.188,
+        "2008": 0.125,
+        "2009": 0.063,
+        "2010": 0.438,
+        "2011": 0.125,
+        "2012": 0.469,
+        "2013": 0.438,
+        "2014": 0.375,
+        "2015": 0.438,
+        "CITY": "St. Louis",
+        "STATE": "Missouri",
+        "TEAM NAME": "St. Louis Rams",
+        "name": "St. Louis, Missouri",
+        "desc": "St. Louis, City of St. Louis, MO, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.197889,
+          38.627273
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.875,
+        "2007": 0.688,
+        "2008": 0.5,
+        "2009": 0.813,
+        "2010": 0.563,
+        "2011": 0.5,
+        "2012": 0.438,
+        "2013": 0.563,
+        "2014": 0.563,
+        "2015": 0.25,
+        "CITY": "San Diego",
+        "STATE": "California",
+        "TEAM NAME": "San Diego Chargers",
+        "name": "San Diego, California",
+        "desc": "San Diego, San Diego County, CA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.162771,
+          32.717421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.438,
+        "2007": 0.313,
+        "2008": 0.438,
+        "2009": 0.5,
+        "2010": 0.375,
+        "2011": 0.813,
+        "2012": 0.719,
+        "2013": 0.75,
+        "2014": 0.5,
+        "2015": 0.313,
+        "CITY": "San Francisco",
+        "STATE": "California",
+        "TEAM NAME": "San Francisco 49ers",
+        "name": "San Francisco, California",
+        "desc": "San Francisco, San Francisco City and County, CA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.41927,
+          37.779277
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.563,
+        "2007": 0.625,
+        "2008": 0.25,
+        "2009": 0.313,
+        "2010": 0.438,
+        "2011": 0.438,
+        "2012": 0.688,
+        "2013": 0.813,
+        "2014": 0.75,
+        "2015": 0.625,
+        "CITY": "Seattle",
+        "STATE": "Washington",
+        "TEAM NAME": "Seattle Seahawks",
+        "name": "Seattle, Washington",
+        "desc": "Seattle, King County, WA, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.330062,
+          47.603832
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.25,
+        "2007": 0.563,
+        "2008": 0.563,
+        "2009": 0.188,
+        "2010": 0.625,
+        "2011": 0.25,
+        "2012": 0.438,
+        "2013": 0.25,
+        "2014": 0.125,
+        "2015": 0.375,
+        "CITY": "Tampa",
+        "STATE": "Florida",
+        "TEAM NAME": "Tampa Bay Buccaneers",
+        "name": "Tampa, Florida",
+        "desc": "Tampa, Hillsborough County, FL, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.458444,
+          27.94776
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.313,
+        "2007": 0.563,
+        "2008": 0.5,
+        "2009": 0.25,
+        "2010": 0.375,
+        "2011": 0.313,
+        "2012": 0.625,
+        "2013": 0.188,
+        "2014": 0.25,
+        "2015": 0.563,
+        "CITY": "Washington",
+        "STATE": "DC",
+        "TEAM NAME": "Washington Redskins",
+        "name": "Washington, DC",
+        "desc": "Washington, District of Columbia, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.036646,
+          38.894955
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "2006": 0.375,
+        "2007": 0.5,
+        "2008": 0.5,
+        "2009": 0.563,
+        "2010": 0.375,
+        "2011": 0.625,
+        "2012": 0.75,
+        "2013": 0.125,
+        "2014": 0.563,
+        "2015": 0.563,
+        "CITY": "Houston",
+        "STATE": "Texas",
+        "TEAM NAME": "Houston Texans",
+        "name": "Houston, Texas",
+        "desc": "Houston, Harris County, TX, US",
+        "color": "",
+        "source": "MapQuest Open",
+        "precision": "city/town"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.367697,
+          29.758938
+        ]
+      }
+    }
+  ]
+}
