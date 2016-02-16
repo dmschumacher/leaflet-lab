@@ -1,6 +1,7 @@
-
+//Set default map view
 var map = L.map('map').setView([51.505, -0.09], 13);
 
+//add tile layer
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     maxZoom: 18,
@@ -8,31 +9,35 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoiZG1zY2h1bWFjaGVyIiwiYSI6ImNpa2g5NjBsNjAxYTF2a2ttcHFmbGFyOXYifQ.wWmDF7mQIq5kv-fCTdCE7g'
 }).addTo(map);
 
+//add a marker to the map
 var marker = L.marker([51.5, -0.09]).addTo(map);
 
+//add a red circle to the map
 var circle = L.circle([51.508, -0.11], 500, {
     color: 'red',
     fillColor: '#f03',
     fillOpacity: 0.5
 }).addTo(map);
 
+//add a polygon to the map
 var polygon = L.polygon([
     [51.509, -0.08],
     [51.503, -0.06],
     [51.51, -0.047]
 ]).addTo(map);
 
+//add text popups to marker, circle,and polygon 
 marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 circle.bindPopup("I am a circle.");
 polygon.bindPopup("I am a polygon.");
 
+//create standalone pop
 var popup = L.popup()
     .setLatLng([51.5, -0.09])
     .setContent("I am a standalone popup.")
     .openOn(map);
 
-var popup = L.popup();
-
+// function that gives coordinates of location when clicked
 function onMapClick(e) {
     popup
         .setLatLng(e.latlng)
@@ -40,9 +45,10 @@ function onMapClick(e) {
         .openOn(map);
 }
 
+//When the map is clicked call onMapClick function
 map.on('click', onMapClick);
 
-
+//define geojson point feature
 var geojsonFeature = {
     "type": "Feature",
     "properties": {
@@ -56,8 +62,10 @@ var geojsonFeature = {
     }
 };
 
+//Add the geojson feature to the map
 L.geoJson(geojsonFeature).addTo(map);
 
+//define two sets of lines
 var myLines = [{
     "type": "LineString",
     "coordinates": [[-100, 40], [-105, 45], [-110, 55]]
@@ -66,16 +74,19 @@ var myLines = [{
     "coordinates": [[-105, 40], [-110, 45], [-115, 55]]
 }];
 
+//define a style
 var myStyle = {
     "color": "#ff7800",
     "weight": 5,
     "opacity": 0.65
 };
 
+//add lines to the map using the previously defined style
 L.geoJson(myLines, {
     style: myStyle
 }).addTo(map);
 
+//define a couple of Polygons (State boundaries) and provide what political party they're associated with
 var states = [{
     "type": "Feature",
     "properties": {"party": "Republican"},
@@ -104,6 +115,8 @@ var states = [{
     }
 }];
 
+//add the states to the map, first checking which politcal party they're associated with
+// and color them red or blue accordingly
 L.geoJson(states, {
     style: function(feature) {
         switch (feature.properties.party) {
@@ -113,49 +126,7 @@ L.geoJson(states, {
     }
 }).addTo(map);
 
-
-var geojsonMarkerOptions = {
-    radius: 8,
-    fillColor: "#ff7800",
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-};
-
-
-
-function onEachFeature(feature, layer) {
-    // does this feature have a property named popupContent?
-    if (feature.properties && feature.properties.popupContent) {
-        layer.bindPopup(feature.properties.popupContent);
-    }
-}
-
-var geojsonFeature = {
-    "type": "Feature",
-    "properties": {
-        "name": "Coors Field",
-        "amenity": "Baseball Stadium",
-        "popupContent": "This is where the Rockies play!"
-    },
-    "geometry": {
-        "type": "Point",
-        "coordinates": [-104.99404, 39.75621]
-    }
-};
-
-L.geoJson(geojsonFeature, {
-    pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, geojsonMarkerOptions);
-    }
-}).addTo(map);
-
-L.geoJson(geojsonFeature, {
-    onEachFeature: onEachFeature
-}).addTo(map);
-
-
+//define a couple of sports fields as point data
 var someFeatures = [{
     "type": "Feature",
     "properties": {
@@ -178,6 +149,7 @@ var someFeatures = [{
     }
 }];
 
+//only add the features to the map where "show_on_map" is true
 L.geoJson(someFeatures, {
     filter: function(feature, layer) {
         return feature.properties.show_on_map;
