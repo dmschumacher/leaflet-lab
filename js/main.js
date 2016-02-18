@@ -83,14 +83,57 @@ function pointToLayer(feature, latlng){
     var layer = L.circleMarker(latlng, options);
 
     //build popup content string
-    var popupContent = "<p><b>City:</b> " + feature.properties.CITY + "</p><p><b>" + attribute + ":</b> " + feature.properties[attribute] + "</p>";
+    var popupContent = "<p><b>City:</b> " + feature.properties.CITY + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p>";
+
+    var panelContent = "<p><b>City:</b> " + feature.properties.CITY  + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p><p><b>" + attribute + ":</b> " + feature.properties[attribute]*100 + "%</p>";
+
 
     //bind the popup to the circle marker
-    layer.bindPopup(popupContent);
+    layer.bindPopup(popupContent, {
+        offset: new L.Point(0,-options.radius),
+        closeButton: false
+    });
+
+    layer.on({
+        mouseover: function(){
+            this.openPopup();
+        },
+        mouseout: function(){
+            this.closePopup();
+        },
+        click: function(){
+            $("#panel").html(panelContent);
+        }
+    });
+
+    // var layer = L.marker(latlng, {
+    //     title: feature.properties.City
+    // });
 
     //return the circle marker to the L.geoJson pointToLayer option
     return layer;
 };
+
+function createSequenceControls(map){
+    //create range input element (slider)
+    $('#panel').append('<input class="range-slider" type="range">');
+
+    //set slider attributes
+    $('.range-slider').attr({
+        max: 6,
+        min: 0,
+        value: 0,
+        step: 1
+    });
+
+    //below Example 3.4...add skip buttons
+    $('#panel').append('<button class="skip" id="reverse">Reverse</button>');
+    $('#panel').append('<button class="skip" id="forward">Skip</button>');
+
+    $('#reverse').html('<img src="img/reverse.png">');
+    $('#forward').html('<img src="img/forward.png">');
+};
+
 
 //Add circle markers for point features to the map
 function createPropSymbols(data, map){
@@ -101,6 +144,27 @@ function createPropSymbols(data, map){
 };
 
 
+function processData(data){
+    //empty array to hold attributes
+    var attributes = [];
+
+    //properties of the first feature in the dataset
+    var properties = data.features[0].properties;
+
+    //push each attribute name into attributes array
+    for (var attribute in properties){
+        //only take attributes with population values
+        if (attribute.indexOf("20") > -1){
+            attributes.push(attribute);
+        };
+    };
+
+    //check result
+    console.log(attributes);
+
+    return attributes;
+};
+
 
 // console.log("Test2");
 //Step 2: Import GeoJSON data
@@ -109,8 +173,11 @@ function getData(map){
     $.ajax("data/Lab1Data.geojson", {
         dataType: "json",
         success: function(response){
+
+            var attributes = processData(response);
             //call function to create proportional symbols
-           createPropSymbols(response, map);
+           createPropSymbols(response, map, attributes);
+           createSequenceControls(map, attributes);
         }
     });
 };
