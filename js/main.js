@@ -14,6 +14,7 @@
 //	zoom
 //	 pan etc
 
+var globalID;
 
 var map = L.map('map').setView([40, -100], 4);
 
@@ -86,7 +87,7 @@ function pointToLayer(feature, latlng, attributes){
     //build popup content string
     var popupContent = "<p><b>City:</b> " + feature.properties.CITY + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p>";
 
-    var panelContent = "<div class = 'panelContent'><p><b>City:</b> " + feature.properties.CITY  + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p><p><b>" + attribute + ":</b> " + feature.properties[attribute]*100 + "%</p></div>";
+    var panelContent = "<div class = 'panelContent'><value = " + feature.properties.CITY + "><p><b>City:</b> " + feature.properties.CITY  + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p><div class = 'year'><p><b>Winnning % in " + attribute + ":</b> " + feature.properties[attribute]*100 + "%</div></p></div>";
 
 
     //bind the popup to the circle marker
@@ -106,9 +107,11 @@ function pointToLayer(feature, latlng, attributes){
             // $("#panel").html(panelContent);
             $( ".panelContent" ).remove();
             $('#panel').append(panelContent);
+            // globalID = feature.properties.CITY;
         }
     });
 
+    // console.log(document.getElementById('panel'));
     // var layer = L.marker(latlng, {
     //     title: feature.properties.City
     // });
@@ -117,10 +120,19 @@ function pointToLayer(feature, latlng, attributes){
     return layer;
 };
 
+// function updatePanel(currPanel){
 
-function updatePropSymbols(map, attribute){
+//     var panelUpdate = ;
+//     $().remove();
+//     $('#panel').append(panelUpdate);
+
+// }
+
+function updatePropSymbols(map, attribute, ID){
     console.log("attribute = " + attribute)
-    var currPanelContent;
+    // var currPanelContent = document.getElementById('panel');
+    // console.log(currPanelContent);
+    var updatePanel;
     map.eachLayer(function(layer){//This causes issues because I lose which city I'm currently on. Need to add city index? Can do when re-geocoding for NY teams
         if (layer.feature && layer.feature.properties[attribute]){
             //update the layer style and popup
@@ -129,8 +141,6 @@ function updatePropSymbols(map, attribute){
 
             //access feature properties
             var props = layer.feature.properties;
-
-            var currentCity = 0;
 
             //update each feature's radius based on new attribute values
             var radius = calcPropRadius(props[attribute]);
@@ -144,27 +154,49 @@ function updatePropSymbols(map, attribute){
             // popupContent += "<p><b>Population in " + year + ":</b> " + props[attribute] + " million</p>";
             popupContent += "<p><b>Team:</b> " + props.TEAM_NAME + "</p>";
 
-            var panelContent = "<div class = 'panelContent'><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>" + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
+            //if (#panel).contents.contains(props.CITY){
+            //     currPanel = "<div class = 'panelContent'><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
+            // } then update #panel outside of the loop.
+            // console.log($(".panelContent").text());
+            // console.log(currPanelContent);
 
+            // if (currPanelContent.indexOf(props.CITY) != -1){
+            //     updatedPanel = "<div class = 'panelContent'><id = " + props.CITY + "<p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
+            // }
+
+            // if ($('.panelContent:contains("' + props.CITY + '")')){
+            //     currPanelContent = "<div class = 'panelContent'><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
+            //     console.log(currPanelContent);
+            // }
+
+            var panelContent = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
+
+            if (panelContent.indexOf(ID) != -1){
+
+                updatedPanel = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
+
+            }
 
             //replace the layer popup
             layer.bindPopup(popupContent, {
                 offset: new L.Point(0,-radius)
             });
             
-
+            // $( ".panelContent" ).remove();
+            //         $('#panel').append(panelContent);
             layer.on({
                 mouseover: function(){
                     this.openPopup();
                 },
                 mouseout: function(){
                     this.closePopup();
+
                 },
                 click: function(){
                     // $("#panel").html(panelContent);
                     $( ".panelContent" ).remove();
                     $('#panel').append(panelContent);
-                    currPanelContent = panelContent;
+                    // currPanelContent = panelContent;
                 }
             });
                 
@@ -173,11 +205,14 @@ function updatePropSymbols(map, attribute){
 
     if ($(".panelContent").text() != ""){
         $( ".panelContent" ).remove();
-        $('#panel').append(currPanelContent);
+        $('#panel').append(updatedPanel);
     }
+    // $('#panel').append(updatedPanel);
 };
 
 function createSequenceControls(map, attributes){
+    // console.log("csq: " + document.getElementById('panel'));
+
     //create range input element (slider)
     $('#panel').append('<input class="range-slider" type="range">');
 
@@ -215,14 +250,33 @@ function createSequenceControls(map, attributes){
         //Step 8: update slider
         $('.range-slider').val(index);
         // console.log("Index = " + index)
-        updatePropSymbols(map, attributes[index]);
+        // console.log("att = " + attributes[index]);
+
+        
+            // var currPanelContent = $( "").text();
+        // console.log(currPanelContent);
+        // var test = currPanelContent.panelContent.id;
+        var currID;
+        if ($(".panelContent").text() != ""){
+            currID = document.getElementsByTagName('p')[0].innerHTML;
+        }
+        // console.log("test = " + test);
+        updatePropSymbols(map, attributes[index], currID);
+        // updatePanel(map, attributes[index]);
+
     });
 
     //Step 5: input listener for slider
     $('.range-slider').on('input', function(){
         var index = $(this).val();
+
+        var currID;
+        if ($(".panelContent").text() != ""){
+            currID = document.getElementsByTagName('p')[0].innerHTML;
+        }
         // console.log("Index = " + index)
-        updatePropSymbols(map, attributes[index]);
+        // console.log("csq: " + document.getElementById('panel'));
+        updatePropSymbols(map, attributes[index], currID);
     });
 };
 
@@ -244,6 +298,8 @@ function processData(data){
 
     //properties of the first feature in the dataset
     var properties = data.features[0].properties;
+
+    console.log("properties = " + properties);
 
     //push each attribute name into attributes array
     for (var attribute in properties){
