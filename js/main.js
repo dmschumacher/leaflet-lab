@@ -13,16 +13,12 @@
 // Implement basic functions
 //	zoom
 //	 pan etc
-
-var globalID;
-
 var map = L.map('map').setView([40, -100], 4);
 
-// var dots;
 function init(){
 	dots = getData(map);
 }
-//add tile layer
+
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     maxZoom: 18,
@@ -30,49 +26,18 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoiZG1zY2h1bWFjaGVyIiwiYSI6ImNpa2g5NjBsNjAxYTF2a2ttcHFmbGFyOXYifQ.wWmDF7mQIq5kv-fCTdCE7g'
 }).addTo(map);
 
-// function createPropSymbols(data, map){
-//    // create marker options
-//     var geojsonMarkerOptions = {
-//         radius: 8,
-//         fillColor: "#ff7800",
-//         color: "#000",
-//         weight: 1,
-//         opacity: 1,
-//         fillOpacity: 0.8
-//     };
-
-//     var att1 = "2006";
-
-//     // console.log("Test1");
-
-//     //create a Leaflet GeoJSON layer and add it to the map
-//     L.geoJson(data, {
-//         pointToLayer: function (feature, latlng) {
-//         	var attValue = Number(feature.properties[att1]);
-//         	// console.log("attValue =", attValue);
-
-//         	geojsonMarkerOptions.radius = calcPropRadius(attValue);
-
-//     		// console.log(feature.properties, attValue);
-
-//             return L.circleMarker(latlng, geojsonMarkerOptions);
-//         }
-//     }).addTo(map);
-// };
-
 //function to convert markers to circle markers
 function pointToLayer(feature, latlng, attributes){
     //Determine which attribute to visualize with proportional symbols
     var attribute = attributes[0];
-    // console.log(attribute);
 
     //create marker options
     var options = {
-        fillColor: "#ff7800",
+        fillColor: "#000099",
         color: "#000",
         weight: 1,
         opacity: 1,
-        fillOpacity: 0.8
+        fillOpacity: 0.8,
     };
 
     //For each feature, determine its value for the selected attribute
@@ -87,7 +52,8 @@ function pointToLayer(feature, latlng, attributes){
     //build popup content string
     var popupContent = "<p><b>City:</b> " + feature.properties.CITY + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p>";
 
-    var panelContent = "<div class = 'panelContent'><value = " + feature.properties.CITY + "><p><b>City:</b> " + feature.properties.CITY  + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p><div class = 'year'><p><b>Winnning % in " + attribute + ":</b> " + feature.properties[attribute]*100 + "%</div></p></div>";
+    //create panel content
+    var panelContent = "<div class = 'panelContent'><value = " + feature.properties.CITY + "><p><b>City:</b> " + feature.properties.CITY  + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p><div class = 'year'><p><b>Winning % in " + attribute + ":</b> " + feature.properties[attribute]*100 + "%</div></p></div>";
 
 
     //bind the popup to the circle marker
@@ -96,6 +62,8 @@ function pointToLayer(feature, latlng, attributes){
         closeButton: false
     });
 
+    //when a prop symbol is hovered over, show popup content. 
+    //when a prop symbol is clicked show panel content
     layer.on({
         mouseover: function(){
             this.openPopup();
@@ -104,40 +72,25 @@ function pointToLayer(feature, latlng, attributes){
             this.closePopup();
         },
         click: function(){
-            // $("#panel").html(panelContent);
+            //prevent clutter by clearing panel and re-adding panel content on each click
             $( ".panelContent" ).remove();
             $('#panel').append(panelContent);
-            // globalID = feature.properties.CITY;
         }
     });
-
-    // console.log(document.getElementById('panel'));
-    // var layer = L.marker(latlng, {
-    //     title: feature.properties.City
-    // });
 
     //return the circle marker to the L.geoJson pointToLayer option
     return layer;
 };
 
-// function updatePanel(currPanel){
+//Update proportional symbols with new timestamp info
+function updatePropSymbols(map, attribute, currentPanel){
 
-//     var panelUpdate = ;
-//     $().remove();
-//     $('#panel').append(panelUpdate);
-
-// }
-
-function updatePropSymbols(map, attribute, ID){
-    console.log("attribute = " + attribute)
-    // var currPanelContent = document.getElementById('panel');
-    // console.log(currPanelContent);
+    //empty variable to hold updated panel content
     var updatePanel;
-    map.eachLayer(function(layer){//This causes issues because I lose which city I'm currently on. Need to add city index? Can do when re-geocoding for NY teams
-        if (layer.feature && layer.feature.properties[attribute]){
-            //update the layer style and popup
-           
 
+    //iterate through all prop symbols to resize and update popup/panel content
+    map.eachLayer(function(layer){
+        if (layer.feature && layer.feature.properties[attribute]){
 
             //access feature properties
             var props = layer.feature.properties;
@@ -147,34 +100,15 @@ function updatePropSymbols(map, attribute, ID){
             layer.setRadius(radius);
 
             //add city to popup content string
-            var popupContent = "<p><b>City:</b> " + props.CITY + "</p>";
+            var popupContent = "<p><b>City:</b> " + props.CITY + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p>";
 
-            //add formatted attribute to panel content string
-            // var year = attribute.split("_")[1];
-            // popupContent += "<p><b>Population in " + year + ":</b> " + props[attribute] + " million</p>";
-            popupContent += "<p><b>Team:</b> " + props.TEAM_NAME + "</p>";
-
-            //if (#panel).contents.contains(props.CITY){
-            //     currPanel = "<div class = 'panelContent'><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
-            // } then update #panel outside of the loop.
-            // console.log($(".panelContent").text());
-            // console.log(currPanelContent);
-
-            // if (currPanelContent.indexOf(props.CITY) != -1){
-            //     updatedPanel = "<div class = 'panelContent'><id = " + props.CITY + "<p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
-            // }
-
-            // if ($('.panelContent:contains("' + props.CITY + '")')){
-            //     currPanelContent = "<div class = 'panelContent'><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
-            //     console.log(currPanelContent);
-            // }
-
+            //update panel content
             var panelContent = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
 
-            if (panelContent.indexOf(ID) != -1){
+            //if this panel content is for the same city that is currently in the panel, store it in a variable for later
+            if (panelContent.indexOf(currentPanel) != -1){
 
-                updatedPanel = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
-
+                updatedPanel = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
             }
 
             //replace the layer popup
@@ -182,8 +116,8 @@ function updatePropSymbols(map, attribute, ID){
                 offset: new L.Point(0,-radius)
             });
             
-            // $( ".panelContent" ).remove();
-            //         $('#panel').append(panelContent);
+            //when a prop symbol is hovered over, show popup content. 
+            //when a prop symbol is clicked show panel content
             layer.on({
                 mouseover: function(){
                     this.openPopup();
@@ -193,25 +127,22 @@ function updatePropSymbols(map, attribute, ID){
 
                 },
                 click: function(){
-                    // $("#panel").html(panelContent);
+                    //prevent clutter by clearing panel and re-adding panel content on each click
                     $( ".panelContent" ).remove();
                     $('#panel').append(panelContent);
-                    // currPanelContent = panelContent;
                 }
             });
-                
         };
     });
 
+    //if the panel isn't blank, remove the current text there, and replace it with the updated information with the new timestamp
     if ($(".panelContent").text() != ""){
         $( ".panelContent" ).remove();
         $('#panel').append(updatedPanel);
     }
-    // $('#panel').append(updatedPanel);
 };
 
 function createSequenceControls(map, attributes){
-    // console.log("csq: " + document.getElementById('panel'));
 
     //create range input element (slider)
     $('#panel').append('<input class="range-slider" type="range">');
@@ -231,11 +162,16 @@ function createSequenceControls(map, attributes){
     $('#reverse').html('<img src="img/reverse_resize.png">');
     $('#forward').html('<img src="img/forward_resize.png">');
 
-
+    //define variable to hold what's currently in the panel
+    var currentPanel;
+    
     $('.skip').click(function(){
         //get the old index value
         var index = $('.range-slider').val();
-
+        // var currentPanel;
+        // if ($(".panelContent").text() != ""){
+        //     currentPanel = document.getElementsByTagName('p')[0].innerHTML;
+        // }
         //Step 6: increment or decrement depending on button clicked
         if ($(this).attr('id') == 'forward'){
             index++;
@@ -249,40 +185,31 @@ function createSequenceControls(map, attributes){
 
         //Step 8: update slider
         $('.range-slider').val(index);
-        // console.log("Index = " + index)
-        // console.log("att = " + attributes[index]);
 
-        
-            // var currPanelContent = $( "").text();
-        // console.log(currPanelContent);
-        // var test = currPanelContent.panelContent.id;
-        var currID;
         if ($(".panelContent").text() != ""){
-            currID = document.getElementsByTagName('p')[0].innerHTML;
+            currentPanel = document.getElementsByTagName('p')[0].innerHTML;
         }
-        // console.log("test = " + test);
-        updatePropSymbols(map, attributes[index], currID);
-        // updatePanel(map, attributes[index]);
-
+        //call function to update proportional symbols and panel
+        updatePropSymbols(map, attributes[index], currentPanel);
     });
 
     //Step 5: input listener for slider
     $('.range-slider').on('input', function(){
-        var index = $(this).val();
 
-        var currID;
+        var index = $(this).val();
+        console.log("Slider input: " + index);
         if ($(".panelContent").text() != ""){
-            currID = document.getElementsByTagName('p')[0].innerHTML;
+            currentPanel = document.getElementsByTagName('p')[0].innerHTML;
         }
-        // console.log("Index = " + index)
-        // console.log("csq: " + document.getElementById('panel'));
-        updatePropSymbols(map, attributes[index], currID);
+        //call function to update proportional symbols and panel
+        updatePropSymbols(map, attributes[index], currentPanel);
     });
 };
 
 
 //Add circle markers for point features to the map
 function createPropSymbols(data, map, attributes){
+    // console.log(mins);
     //create a Leaflet GeoJSON layer and add it to the map
    L.geoJson(data, {
         pointToLayer: function(feature, latlng){
@@ -291,32 +218,28 @@ function createPropSymbols(data, map, attributes){
     }).addTo(map);
 };
 
-
+//Extract timestamp headers
 function processData(data){
     //empty array to hold attributes
     var attributes = [];
-
+    
     //properties of the first feature in the dataset
     var properties = data.features[0].properties;
-
-    console.log("properties = " + properties);
 
     //push each attribute name into attributes array
     for (var attribute in properties){
         //only take attributes with population values
+        var val = properties[attribute];
+        // console.log("val = " + val);
         if (attribute.indexOf("20") > -1){
             attributes.push(attribute);
         };
     };
 
-    //check result
-    // console.log(attributes);
-
     return attributes;
 };
 
 
-// console.log("Test2");
 //Step 2: Import GeoJSON data
 function getData(map){
     //load the data
@@ -326,28 +249,20 @@ function getData(map){
 
             var attributes = processData(response);
             //call function to create proportional symbols
-           createPropSymbols(response, map, attributes);
-           createSequenceControls(map, attributes);
+            createPropSymbols(response, map, attributes);
+            createSequenceControls(map, attributes);
         }
     });
 };
 
-
+//calculate radius of a proportional symbol
 function calcPropRadius(attValue){
-	// console.log("Test3");
-	var scaleFactor = 500;
-	// console.log("attValue =", attValue);
-	var area = scaleFactor * attValue;
-	var radius = Math.sqrt(area/Math.PI);
-	// console.log("Radius = ", radius);
+
+    var scaleFactor = 500;
+    var area = scaleFactor * attValue;
+    var radius = Math.sqrt(area/Math.PI);
+
 	return radius;
 }
-// map.on('click', onMapClick);
-
-// function on
-// var dots = getData(map);
-// dots.bindpopup("Click");
-
-// function
 
 $(document).ready(init);
