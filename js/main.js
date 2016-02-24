@@ -13,11 +13,81 @@
 // Implement basic functions
 //	zoom
 //	 pan etc
-var map = L.map('map').setView([40, -100], 4);
+var nfcn = new L.layerGroup();
+var nfce = new L.layerGroup();
+var nfcs = new L.layerGroup();
+var nfcw = new L.layerGroup();
+var afcn = new L.layerGroup();
+var afce = new L.layerGroup();
+var afcs = new L.layerGroup();
+var afcw = new L.layerGroup();
+
+var map = L.map('map', {
+    center: [39.73, -104.99],
+    zoom: 4,
+    layers: [nfcn]
+});
+
+
+// var nfcn = document.getElementById('nfc_north');
+// var all = document.getElementById('all');
+
+// // var markers = [];
+
+$('.menu-ui a').on('click', function() {
+    
+    var filter = $(this).data('filter');
+    // console.log("this: " + $(this));
+    console.log("filter = " + filter);
+    map.eachLayer(function(layer){
+        
+        if (layer.feature && layer.feature.properties){
+            console.log("conf " + layer.feature.properties.CONF);
+            if (layer.feature.properties.CONF == filter){
+                console.log("conf2 " + layer.feature.properties.CONF);
+                map.addLayer(layer);
+            }else{
+                map.removeLayer(layer);
+            }
+        }
+        
+    });
+
+
+    // }
+    // // For each filter link, get the 'data-filter' attribute value.
+    // var filter = $(this).data('filter');
+    // console.log("filter = " + filter);
+    // $(this).addClass('active').siblings().removeClass('active');
+    // markers[0].feature.setFilter(function(f) {
+    //     // If the data-filter attribute is set to "all", return
+    //     // all (true). Otherwise, filter on markers that have
+    //     // a value set to true based on the filter name.
+    //     return (filter === 'all') ? true : f.properties[filter] === true;
+    // });
+    // return false;
+});
+
+// nfcn.onclick = function(e) {
+
+
+//         turnOffAll();
+//         this.className = 'active';
+//         // The setFilter function takes a GeoJSON feature object
+//         // and returns true to show it or false to hide it.
+//         map.featureLayer.setFilter(function(f) {
+//             return f.properties['CONF'] === 'NFC_N';
+//         });
+//         return false;
+// };
+
+// function turnOffAll(){
+//     nfcn.className = "";
+// }
 
 function init(){
 	dots = getData(map);
-}
+};
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -25,6 +95,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     id: 'dmschumacher.p4bn3g0b',
     accessToken: 'pk.eyJ1IjoiZG1zY2h1bWFjaGVyIiwiYSI6ImNpa2g5NjBsNjAxYTF2a2ttcHFmbGFyOXYifQ.wWmDF7mQIq5kv-fCTdCE7g'
 }).addTo(map);
+
 
 //function to convert markers to circle markers
 function pointToLayer(feature, latlng, attributes){
@@ -40,6 +111,11 @@ function pointToLayer(feature, latlng, attributes){
         fillOpacity: 0.8,
     };
 
+    // if (feature.properties.CONF == "NFC_N"){
+    //     nfcn.addLayer(feature);
+    // }
+
+    
     //For each feature, determine its value for the selected attribute
     var attValue = Number(feature.properties[attribute]);
 
@@ -48,6 +124,40 @@ function pointToLayer(feature, latlng, attributes){
 
     //create circle marker layer
     var layer = L.circleMarker(latlng, options);
+
+    // switch (feature.properties.CONF){
+    //     case "NFC_N":
+    //         nfcn.addLayer(layer);
+    //         break;
+
+    //     case "NFC_E":
+    //         nfce.addLayer(layer);
+    //         break;
+
+    //     case "NFC_S":
+    //         nfcs.addLayer(layer);
+    //         break;
+
+    //     case "NFC_W":
+    //         nfcw.addLayer(layer);
+    //         break;
+
+    //     case "AFC_N":
+    //         afcn.addLayer(layer);
+    //         break;
+
+    //     case "AFC_E":
+    //         afce.addLayer(layer);
+    //         break;
+
+    //     case "AFC_S":
+    //         afcs.addLayer(layer);
+    //         break;
+
+    //     case "AFC_W":
+    //         afcw.addLayer(layer);
+    //         break;
+    // }
 
     //build popup content string
     var popupContent = "<p><b>City:</b> " + feature.properties.CITY + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p>";
@@ -78,9 +188,12 @@ function pointToLayer(feature, latlng, attributes){
         }
     });
 
+    // markers.push(layer);
     //return the circle marker to the L.geoJson pointToLayer option
     return layer;
 };
+
+// console.log(nfcn);
 
 //Update proportional symbols with new timestamp info
 function updatePropSymbols(map, attribute, currentPanel){
@@ -212,10 +325,14 @@ function createPropSymbols(data, map, attributes){
     // console.log(mins);
     //create a Leaflet GeoJSON layer and add it to the map
    L.geoJson(data, {
+        // filter: function(){
+
+        // },
         pointToLayer: function(feature, latlng){
             return pointToLayer(feature, latlng, attributes);
         }
     }).addTo(map);
+   // console.log("markers: " + markers[0].feature.properties.CITY);
 };
 
 //Extract timestamp headers
