@@ -13,19 +13,19 @@
 // Implement basic functions
 //	zoom
 //	 pan etc
-var nfcn = new L.layerGroup();
-var nfce = new L.layerGroup();
-var nfcs = new L.layerGroup();
-var nfcw = new L.layerGroup();
-var afcn = new L.layerGroup();
-var afce = new L.layerGroup();
-var afcs = new L.layerGroup();
-var afcw = new L.layerGroup();
+// var nfcn = new L.layerGroup();
+// var nfce = new L.layerGroup();
+// var nfcs = new L.layerGroup();
+// var nfcw = new L.layerGroup();
+// var afcn = new L.layerGroup();
+// var afce = new L.layerGroup();
+// var afcs = new L.layerGroup();
+// var afcw = new L.layerGroup();
 
 var map = L.map('map', {
     center: [39.73, -104.99],
-    zoom: 4,
-    layers: [nfcn]
+    zoom: 4
+    // layers: [nfcn]
 });
 
 
@@ -35,23 +35,33 @@ var map = L.map('map', {
 // // var markers = [];
 
 $('.menu-ui a').on('click', function() {
-    
-    var filter = $(this).data('filter');
-    // console.log("this: " + $(this));
-    console.log("filter = " + filter);
-    map.eachLayer(function(layer){
+    var conf = $(this).data('filter');
+    console.log("filter = " + conf);
+    removeLayers();
+    getData(map, conf);
+    // updatePropSymbols(map,);
+    // createPropSymbols();
+    // var filter = $(this).data('filter');
+    // // console.log("this: " + $(this));
+    // console.log("filter = " + filter);
+    // var group = [];
+    // map.eachLayer(function(layer){
         
-        if (layer.feature && layer.feature.properties){
-            console.log("conf " + layer.feature.properties.CONF);
-            if (layer.feature.properties.CONF == filter){
-                console.log("conf2 " + layer.feature.properties.CONF);
-                map.addLayer(layer);
-            }else{
-                map.removeLayer(layer);
-            }
-        }
+        // if (layer.feature && layer.feature.properties){
+        //     console.log("conf " + layer.feature.properties.CONF);
+        //     if (layer.feature.properties.CONF == filter){
+        //         console.log("conf2 " + layer.feature.properties.CONF);
+        //         map.addLayer(layer);
+        //         group.push(layer);
+        //     }else{
+        //         map.removeLayer(layer);
+        //         layer.options()
+        //     }
+        // }
         
-    });
+    // });
+
+    // L.control.layers(group).addTo(map);
 
 
     // }
@@ -86,7 +96,7 @@ $('.menu-ui a').on('click', function() {
 // }
 
 function init(){
-	dots = getData(map);
+	dots = getData(map,"all");
 };
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -96,6 +106,14 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoiZG1zY2h1bWFjaGVyIiwiYSI6ImNpa2g5NjBsNjAxYTF2a2ttcHFmbGFyOXYifQ.wWmDF7mQIq5kv-fCTdCE7g'
 }).addTo(map);
 
+function removeLayers(){
+     map.eachLayer(function(layer){
+         if (layer.feature && layer.feature.properties){
+            map.removeLayer(layer);
+         }
+        
+     });
+};
 
 //function to convert markers to circle markers
 function pointToLayer(feature, latlng, attributes){
@@ -124,6 +142,8 @@ function pointToLayer(feature, latlng, attributes){
 
     //create circle marker layer
     var layer = L.circleMarker(latlng, options);
+
+    
 
     // switch (feature.properties.CONF){
     //     case "NFC_N":
@@ -188,9 +208,20 @@ function pointToLayer(feature, latlng, attributes){
         }
     });
 
+    // var addToMap = 0;
+
+    
+    // if (feature.properties.CONF == conf || conf == "all"){
+    //       // addToMap = 1;  
+    //       return layer;
+    // }else{
+    //     return false;
+    // }
+
+    return layer;
     // markers.push(layer);
     //return the circle marker to the L.geoJson pointToLayer option
-    return layer;
+    
 };
 
 // console.log(nfcn);
@@ -256,9 +287,30 @@ function updatePropSymbols(map, attribute, currentPanel){
 };
 
 function createSequenceControls(map, attributes){
+    var SequenceControl = L.Control.extend({
+        options: {
+            position: 'bottomleft'
+        },
 
+        onAdd: function (map) {
+            // create the control container div with a particular class name
+            var container = L.DomUtil.create('div', 'sequence-control-container');
+            $(container).append('<input class="range-slider" type="range">');
+            // ... initialize other DOM elements, add listeners, etc.
+            $(container).append('<button class="skip" id="reverse" title="Reverse">Reverse</button>');
+            $(container).append('<button class="skip" id="forward" title="Forward">Skip</button>');
+           
+            $(container).on('mousedown dblclick', function(e){
+                L.DomEvent.stopPropagation(e);
+            });
+
+            return container;
+        }
+    });
+
+    map.addControl(new SequenceControl());
     //create range input element (slider)
-    $('#panel').append('<input class="range-slider" type="range">');
+    // $('#panel').append('<input class="range-slider" type="range">');
 
     //set slider attributes
     $('.range-slider').attr({
@@ -269,8 +321,8 @@ function createSequenceControls(map, attributes){
     });
 
     //below Example 3.4...add skip buttons
-    $('#panel').append('<button class="skip" id="reverse">Reverse</button>');
-    $('#panel').append('<button class="skip" id="forward">Skip</button>');
+    // $('#panel').append('<button class="skip" id="reverse">Reverse</button>');
+    // $('#panel').append('<button class="skip" id="forward">Skip</button>');
 
     $('#reverse').html('<img src="img/reverse_resize.png">');
     $('#forward').html('<img src="img/forward_resize.png">');
@@ -319,17 +371,39 @@ function createSequenceControls(map, attributes){
     });
 };
 
+// function createMenu(){
+//     var menu = L.DomUtil.create('nav', 'menu-ui');
+    
+//     // $(menu).append("<nav id='menu-ui' class='menu-ui'>");
+//     $(menu).append("<a href='#' class='active' id='all'>All Divisions</a>");
+//     $(menu).append("<a href='#' data-filter='NFC_N'>NFC North</a>");
+//     $(menu).append("<a href='#' data-filter='NFC_S'>NFC South</a>");
+//     $(menu).append("<a href='#' data-filter='NFC_E'>NFC East</a>");
+//     $(menu).append("<a href='#' data-filter='NFC_W'>NFC West</a>");
+//     $(menu).append("<a href='#' data-filter='AFC_N'>AFC North</a>");
+//     $(menu).append("<a href='#' data-filter='AFC_S'>AFC South</a>");
+//     $(menu).append("<a href='#' data-filter='AFC_E'>AFC East</a>");
+//     $(menu).append("<a href='#' data-filter='AFC_W'>AFC West</a>");
+//     // $(menu).append("</nav>");
+    
+// }
 
 //Add circle markers for point features to the map
-function createPropSymbols(data, map, attributes){
+function createPropSymbols(data, map, attributes, conf){
     // console.log(mins);
     //create a Leaflet GeoJSON layer and add it to the map
    L.geoJson(data, {
-        // filter: function(){
-
-        // },
         pointToLayer: function(feature, latlng){
             return pointToLayer(feature, latlng, attributes);
+        // }
+        },
+        filter: function(feature, layer) {
+            if(feature.properties.CONF == conf || conf == "all"){
+                return true;
+            }else{
+                return false;
+            }
+            // return feature.properties.CONF == conf || (conf == "all");
         }
     }).addTo(map);
    // console.log("markers: " + markers[0].feature.properties.CITY);
@@ -358,7 +432,7 @@ function processData(data){
 
 
 //Step 2: Import GeoJSON data
-function getData(map){
+function getData(map,conf){
     //load the data
     $.ajax("data/Lab1Data.geojson", {
         dataType: "json",
@@ -366,8 +440,9 @@ function getData(map){
 
             var attributes = processData(response);
             //call function to create proportional symbols
-            createPropSymbols(response, map, attributes);
+            createPropSymbols(response, map, attributes, conf);
             createSequenceControls(map, attributes);
+            // createMenu();
         }
     });
 };
@@ -375,8 +450,8 @@ function getData(map){
 //calculate radius of a proportional symbol
 function calcPropRadius(attValue){
 
-    var scaleFactor = 500;
-    var area = scaleFactor * attValue;
+    var scaleFactor = .5;
+    var area = scaleFactor * Math.pow(attValue*100, 2);
     var radius = Math.sqrt(area/Math.PI);
 
 	return radius;
