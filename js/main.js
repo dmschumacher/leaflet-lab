@@ -21,6 +21,7 @@
 // var afce = new L.layerGroup();
 // var afcs = new L.layerGroup();
 // var afcw = new L.layerGroup();
+var first = true;
 
 var map = L.map('map', {
     center: [39.73, -104.99],
@@ -29,74 +30,31 @@ var map = L.map('map', {
 });
 
 
-// var nfcn = document.getElementById('nfc_north');
-// var all = document.getElementById('all');
 
-// // var markers = [];
+function clearClassNames(){
+    document.getElementById("ALL").className = '';
+    document.getElementById("NFC_N").className = '';
+    document.getElementById("NFC_E").className = '';
+    document.getElementById("NFC_S").className = '';
+    document.getElementById("NFC_W").className = '';
+    document.getElementById("AFC_N").className = '';
+    document.getElementById("AFC_E").className = '';
+    document.getElementById("AFC_S").className = '';
+    document.getElementById("AFC_W").className = '';
+    // $('.menu-ui a').ALL.className = '';
+    // $('.menu-ui a').NFC_N.className = '';
+    // $('.menu-ui a').NFC_E.className = '';
+    // $('.menu-ui a').NFC_S.className = '';
+    // $('.menu-ui a').NFC_W.className = '';
+    // $('.menu-ui a').AFC_N.className = '';
+    // $('.menu-ui a').AFC_E.className = '';
+    // $('.menu-ui a').AFC_S.className = '';
+    // $('.menu-ui a').AFC_W.className = '';
 
-$('.menu-ui a').on('click', function() {
-    var conf = $(this).data('filter');
-    console.log("filter = " + conf);
-    removeLayers();
-    getData(map, conf);
-    // updatePropSymbols(map,);
-    // createPropSymbols();
-    // var filter = $(this).data('filter');
-    // // console.log("this: " + $(this));
-    // console.log("filter = " + filter);
-    // var group = [];
-    // map.eachLayer(function(layer){
-        
-        // if (layer.feature && layer.feature.properties){
-        //     console.log("conf " + layer.feature.properties.CONF);
-        //     if (layer.feature.properties.CONF == filter){
-        //         console.log("conf2 " + layer.feature.properties.CONF);
-        //         map.addLayer(layer);
-        //         group.push(layer);
-        //     }else{
-        //         map.removeLayer(layer);
-        //         layer.options()
-        //     }
-        // }
-        
-    // });
-
-    // L.control.layers(group).addTo(map);
-
-
-    // }
-    // // For each filter link, get the 'data-filter' attribute value.
-    // var filter = $(this).data('filter');
-    // console.log("filter = " + filter);
-    // $(this).addClass('active').siblings().removeClass('active');
-    // markers[0].feature.setFilter(function(f) {
-    //     // If the data-filter attribute is set to "all", return
-    //     // all (true). Otherwise, filter on markers that have
-    //     // a value set to true based on the filter name.
-    //     return (filter === 'all') ? true : f.properties[filter] === true;
-    // });
-    // return false;
-});
-
-// nfcn.onclick = function(e) {
-
-
-//         turnOffAll();
-//         this.className = 'active';
-//         // The setFilter function takes a GeoJSON feature object
-//         // and returns true to show it or false to hide it.
-//         map.featureLayer.setFilter(function(f) {
-//             return f.properties['CONF'] === 'NFC_N';
-//         });
-//         return false;
-// };
-
-// function turnOffAll(){
-//     nfcn.className = "";
-// }
+};
 
 function init(){
-	dots = getData(map,"all");
+	getData(map);
 };
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -106,14 +64,15 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoiZG1zY2h1bWFjaGVyIiwiYSI6ImNpa2g5NjBsNjAxYTF2a2ttcHFmbGFyOXYifQ.wWmDF7mQIq5kv-fCTdCE7g'
 }).addTo(map);
 
-function removeLayers(){
-     map.eachLayer(function(layer){
-         if (layer.feature && layer.feature.properties){
-            map.removeLayer(layer);
-         }
+// function removeLayers(){
+//      map.eachLayer(function(layer){
+//         console.log(layer.layerPointToLatLng);
+//          if (layer.feature && layer.feature.properties){
+//             map.removeLayer(layer);
+//          }
         
-     });
-};
+//      });
+// };
 
 //function to convert markers to circle markers
 function pointToLayer(feature, latlng, attributes){
@@ -129,10 +88,6 @@ function pointToLayer(feature, latlng, attributes){
         fillOpacity: 0.8,
     };
 
-    // if (feature.properties.CONF == "NFC_N"){
-    //     nfcn.addLayer(feature);
-    // }
-
     
     //For each feature, determine its value for the selected attribute
     var attValue = Number(feature.properties[attribute]);
@@ -142,42 +97,6 @@ function pointToLayer(feature, latlng, attributes){
 
     //create circle marker layer
     var layer = L.circleMarker(latlng, options);
-
-    
-
-    // switch (feature.properties.CONF){
-    //     case "NFC_N":
-    //         nfcn.addLayer(layer);
-    //         break;
-
-    //     case "NFC_E":
-    //         nfce.addLayer(layer);
-    //         break;
-
-    //     case "NFC_S":
-    //         nfcs.addLayer(layer);
-    //         break;
-
-    //     case "NFC_W":
-    //         nfcw.addLayer(layer);
-    //         break;
-
-    //     case "AFC_N":
-    //         afcn.addLayer(layer);
-    //         break;
-
-    //     case "AFC_E":
-    //         afce.addLayer(layer);
-    //         break;
-
-    //     case "AFC_S":
-    //         afcs.addLayer(layer);
-    //         break;
-
-    //     case "AFC_W":
-    //         afcw.addLayer(layer);
-    //         break;
-    // }
 
     //build popup content string
     var popupContent = "<p><b>City:</b> " + feature.properties.CITY + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p>";
@@ -208,41 +127,43 @@ function pointToLayer(feature, latlng, attributes){
         }
     });
 
-    // var addToMap = 0;
-
-    
-    // if (feature.properties.CONF == conf || conf == "all"){
-    //       // addToMap = 1;  
-    //       return layer;
-    // }else{
-    //     return false;
-    // }
-
     return layer;
-    // markers.push(layer);
-    //return the circle marker to the L.geoJson pointToLayer option
     
 };
 
-// console.log(nfcn);
-
 //Update proportional symbols with new timestamp info
-function updatePropSymbols(map, attribute, currentPanel){
+function updatePropSymbols(map, attribute, currentPanel, conf){
 
     //empty variable to hold updated panel content
     var updatePanel;
-
+    var bounds = [];
     //iterate through all prop symbols to resize and update popup/panel content
     map.eachLayer(function(layer){
         if (layer.feature && layer.feature.properties[attribute]){
-
+            console.log("Valid Layer");
             //access feature properties
             var props = layer.feature.properties;
 
             //update each feature's radius based on new attribute values
             var radius = calcPropRadius(props[attribute]);
-            layer.setRadius(radius);
+            // layer.setRadius(radius);
 
+            if(conf == 'ALL' || conf == "Sequence"){
+                layer.setRadius(radius);
+                // bounds.push(layer._latlng);
+                // layer.options.opacity = 1;
+            }else if(props.CONF == conf){
+                layer.setRadius(radius);
+                bounds.push(layer._latlng);
+                // console.log("conf = " + conf);
+                // layer.options.opacity = 1;
+                // layer.
+            }else{
+                layer.setRadius(0);
+                // layer.options.opacity = 0;
+            }
+
+            // console.log(layer._latlng);
             //add city to popup content string
             var popupContent = "<p><b>City:</b> " + props.CITY + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p>";
 
@@ -254,7 +175,10 @@ function updatePropSymbols(map, attribute, currentPanel){
 
                 updatedPanel = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
             }
-
+            console.log(layer);
+            
+            // console.log(layer.options.opacity);
+            // layer.options;
             //replace the layer popup
             layer.bindPopup(popupContent, {
                 offset: new L.Point(0,-radius)
@@ -284,31 +208,49 @@ function updatePropSymbols(map, attribute, currentPanel){
         $( ".panelContent" ).remove();
         $('#panel').append(updatedPanel);
     }
+    // var padding = [10,10];
+    if (conf == "ALL"){
+        bounds.push([49.38,-66.94])
+        bounds.push([25.82,-124.39]);
+    }
+
+    map.fitBounds(bounds, {padding: [50,50]});
 };
 
 function createSequenceControls(map, attributes){
-    var SequenceControl = L.Control.extend({
-        options: {
-            position: 'bottomleft'
-        },
+   
+    if (first){
+        var SequenceControl = L.Control.extend({
+            options: {
+                position: 'bottomleft'
+            },
 
-        onAdd: function (map) {
-            // create the control container div with a particular class name
-            var container = L.DomUtil.create('div', 'sequence-control-container');
-            $(container).append('<input class="range-slider" type="range">');
-            // ... initialize other DOM elements, add listeners, etc.
-            $(container).append('<button class="skip" id="reverse" title="Reverse">Reverse</button>');
-            $(container).append('<button class="skip" id="forward" title="Forward">Skip</button>');
-           
-            $(container).on('mousedown dblclick', function(e){
-                L.DomEvent.stopPropagation(e);
-            });
+            onAdd: function (map) {
+                // create the control container div with a particular class name
+                // var container = document.getElementByClassName("sequence-control-container");
 
-            return container;
-        }
-    });
+                // if (!L.DomUtil.hasClass('sequence-control-container')){
 
-    map.addControl(new SequenceControl());
+                // }
+                var container = L.DomUtil.create('div', 'sequence-control-container');
+                $(container).append('<input class="range-slider" type="range">');
+                // ... initialize other DOM elements, add listeners, etc.
+                $(container).append('<button class="skip" id="reverse" title="Reverse">Reverse</button>');
+                $(container).append('<button class="skip" id="forward" title="Forward">Skip</button>');
+               
+                $(container).on('mousedown dblclick', function(e){
+                    L.DomEvent.stopPropagation(e);
+                });
+
+                return container;
+            }
+        });
+
+        map.addControl(new SequenceControl());
+
+        first = false;
+    }
+    
     //create range input element (slider)
     // $('#panel').append('<input class="range-slider" type="range">');
 
@@ -355,7 +297,7 @@ function createSequenceControls(map, attributes){
             currentPanel = document.getElementsByTagName('p')[0].innerHTML;
         }
         //call function to update proportional symbols and panel
-        updatePropSymbols(map, attributes[index], currentPanel);
+        updatePropSymbols(map, attributes[index], currentPanel, "Sequence");
     });
 
     //Step 5: input listener for slider
@@ -367,43 +309,58 @@ function createSequenceControls(map, attributes){
             currentPanel = document.getElementsByTagName('p')[0].innerHTML;
         }
         //call function to update proportional symbols and panel
-        updatePropSymbols(map, attributes[index], currentPanel);
+        updatePropSymbols(map, attributes[index], currentPanel, "Sequence");
     });
 };
 
-// function createMenu(){
-//     var menu = L.DomUtil.create('nav', 'menu-ui');
-    
-//     // $(menu).append("<nav id='menu-ui' class='menu-ui'>");
-//     $(menu).append("<a href='#' class='active' id='all'>All Divisions</a>");
-//     $(menu).append("<a href='#' data-filter='NFC_N'>NFC North</a>");
-//     $(menu).append("<a href='#' data-filter='NFC_S'>NFC South</a>");
-//     $(menu).append("<a href='#' data-filter='NFC_E'>NFC East</a>");
-//     $(menu).append("<a href='#' data-filter='NFC_W'>NFC West</a>");
-//     $(menu).append("<a href='#' data-filter='AFC_N'>AFC North</a>");
-//     $(menu).append("<a href='#' data-filter='AFC_S'>AFC South</a>");
-//     $(menu).append("<a href='#' data-filter='AFC_E'>AFC East</a>");
-//     $(menu).append("<a href='#' data-filter='AFC_W'>AFC West</a>");
-//     // $(menu).append("</nav>");
-    
-// }
 
-//Add circle markers for point features to the map
-function createPropSymbols(data, map, attributes, conf){
+$('.menu-ui a').on('click', function() {
+    var index = $('.range-slider').val();
+    index = Number(index);
+    var year = 2006 + index;
+    year = year.toString();
+    // console.log("year: " + year);
+    clearClassNames();
+    var conf = $(this).data('filter');
+    var currentPanelCity;
+    if ($(".panelContent").text() != ""){
+            currentPanelCity = document.getElementsByTagName('p')[0].innerHTML;
+    }
+
+    // var attributes = ;
+    // var year;
+    // if ($(".panelContent").text() != ""){
+    //     year = document.getElementsByTagName('p')[2].innerHTML;
+    // }
+    // year = year.substring(16,20);
+        // console.log(year);
+    updatePropSymbols(map, year, currentPanelCity, conf);
+    this.className = 'active';
+
+    //then use setOpacity to make certain layers invisible
+
+    // console.log("filter = " + conf);
+    // removeLayers();
+    // getData(map, conf);
+    // var group = [];
+    // map.eachLayer(function(layer){
+    //     console.log(layer.layerPointToLatLng);
+    //      if (layer.feature && layer.feature.properties){
+
+    //         group.push(layer.layerPointToLatLng);
+    //      }  
+    // });
+    
+    // map.fitBounds(group);
+});
+
+
+function createPropSymbols(data, map, attributes){
     // console.log(mins);
     //create a Leaflet GeoJSON layer and add it to the map
    L.geoJson(data, {
         pointToLayer: function(feature, latlng){
             return pointToLayer(feature, latlng, attributes);
-        // }
-        },
-        filter: function(feature, layer) {
-            if(feature.properties.CONF == conf || conf == "all"){
-                return true;
-            }else{
-                return false;
-            }
-            // return feature.properties.CONF == conf || (conf == "all");
         }
     }).addTo(map);
    // console.log("markers: " + markers[0].feature.properties.CITY);
@@ -432,7 +389,7 @@ function processData(data){
 
 
 //Step 2: Import GeoJSON data
-function getData(map,conf){
+function getData(map){
     //load the data
     $.ajax("data/Lab1Data.geojson", {
         dataType: "json",
@@ -440,7 +397,7 @@ function getData(map,conf){
 
             var attributes = processData(response);
             //call function to create proportional symbols
-            createPropSymbols(response, map, attributes, conf);
+            createPropSymbols(response, map, attributes);
             createSequenceControls(map, attributes);
             // createMenu();
         }
