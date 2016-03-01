@@ -13,24 +13,24 @@
 // Implement basic functions
 //	zoom
 //	 pan etc
-// var nfcn = new L.layerGroup();
-// var nfce = new L.layerGroup();
-// var nfcs = new L.layerGroup();
-// var nfcw = new L.layerGroup();
-// var afcn = new L.layerGroup();
-// var afce = new L.layerGroup();
-// var afcs = new L.layerGroup();
-// var afcw = new L.layerGroup();
+
 var first = true;
 
+//starting map boundaries
+var mapbounds = [];
+mapbounds.push([49.38,-66.94])
+mapbounds.push([25.82,-124.39]);
+ 
 var map = L.map('map', {
     center: [39.73, -104.99],
-    zoom: 4
-    // layers: [nfcn]
+    maxZoom: 8,
+    minZoom: 4
 });
 
+//set map to show the US on load
+map.fitBounds(mapbounds, {padding: [50,50]});
 
-
+//reset class names from the dropdown menu to ''
 function clearClassNames(){
     document.getElementById("ALL").className = '';
     document.getElementById("NFC_N").className = '';
@@ -41,16 +41,6 @@ function clearClassNames(){
     document.getElementById("AFC_E").className = '';
     document.getElementById("AFC_S").className = '';
     document.getElementById("AFC_W").className = '';
-    // $('.menu-ui a').ALL.className = '';
-    // $('.menu-ui a').NFC_N.className = '';
-    // $('.menu-ui a').NFC_E.className = '';
-    // $('.menu-ui a').NFC_S.className = '';
-    // $('.menu-ui a').NFC_W.className = '';
-    // $('.menu-ui a').AFC_N.className = '';
-    // $('.menu-ui a').AFC_E.className = '';
-    // $('.menu-ui a').AFC_S.className = '';
-    // $('.menu-ui a').AFC_W.className = '';
-
 };
 
 function init(){
@@ -64,15 +54,6 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoiZG1zY2h1bWFjaGVyIiwiYSI6ImNpa2g5NjBsNjAxYTF2a2ttcHFmbGFyOXYifQ.wWmDF7mQIq5kv-fCTdCE7g'
 }).addTo(map);
 
-// function removeLayers(){
-//      map.eachLayer(function(layer){
-//         console.log(layer.layerPointToLatLng);
-//          if (layer.feature && layer.feature.properties){
-//             map.removeLayer(layer);
-//          }
-        
-//      });
-// };
 
 //function to convert markers to circle markers
 function pointToLayer(feature, latlng, attributes){
@@ -85,7 +66,7 @@ function pointToLayer(feature, latlng, attributes){
         color: "#000",
         weight: 1,
         opacity: 1,
-        fillOpacity: 0.8,
+        fillOpacity: 0.65,
     };
 
     
@@ -134,37 +115,49 @@ function pointToLayer(feature, latlng, attributes){
 //Update proportional symbols with new timestamp info
 function updatePropSymbols(map, attribute, currentPanel, conf){
 
+    //if this function was called from sequence, set "conf" to 
+    //the "active" conference. This way if you filter to a division,
+    //it will only update the current division
+    if (conf == 'Sequence'){ 
+
+        conf = document.getElementsByClassName('active')[0].id;
+    }
+
     //empty variable to hold updated panel content
     var updatePanel;
+
+    //empty array to hold latlngs of 'active' layers
     var bounds = [];
+
     //iterate through all prop symbols to resize and update popup/panel content
     map.eachLayer(function(layer){
         if (layer.feature && layer.feature.properties[attribute]){
-            console.log("Valid Layer");
+            // console.log("Valid Layer");
             //access feature properties
             var props = layer.feature.properties;
 
             //update each feature's radius based on new attribute values
             var radius = calcPropRadius(props[attribute]);
-            // layer.setRadius(radius);
 
-            if(conf == 'ALL' || conf == "Sequence"){
+            //if we're looking at all of the division, calculate radius normally
+            if(conf == 'ALL'){
                 layer.setRadius(radius);
-                // bounds.push(layer._latlng);
-                // layer.options.opacity = 1;
+                
+            //if a specfic conference has been specified calculate
+            //the radius if its in the division or simply set the radius 
+            //to 0 (to make it invisble on the map)
             }else if(props.CONF == conf){
                 layer.setRadius(radius);
+
+                //add the current layer to the array
                 bounds.push(layer._latlng);
-                // console.log("conf = " + conf);
-                // layer.options.opacity = 1;
-                // layer.
+                  
             }else{
                 layer.setRadius(0);
-                // layer.options.opacity = 0;
+     
             }
 
-            // console.log(layer._latlng);
-            //add city to popup content string
+            //update popup content
             var popupContent = "<p><b>City:</b> " + props.CITY + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p>";
 
             //update panel content
@@ -175,10 +168,7 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
 
                 updatedPanel = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
             }
-            console.log(layer);
-            
-            // console.log(layer.options.opacity);
-            // layer.options;
+       
             //replace the layer popup
             layer.bindPopup(popupContent, {
                 offset: new L.Point(0,-radius)
@@ -208,17 +198,22 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
         $( ".panelContent" ).remove();
         $('#panel').append(updatedPanel);
     }
-    // var padding = [10,10];
+    
+    //if we want all the teams to show up add the coordinates to the array
     if (conf == "ALL"){
         bounds.push([49.38,-66.94])
         bounds.push([25.82,-124.39]);
     }
 
+    //fit the map to the specified cities/teams based on coordinates that have
+    //been added to the 'bounds' array
     map.fitBounds(bounds, {padding: [50,50]});
 };
 
 function createSequenceControls(map, attributes){
    
+   //only add to the map if its the first time this is being called
+   //(this was messing with something, but I don't remember what :/)
     if (first){
         var SequenceControl = L.Control.extend({
             options: {
@@ -227,11 +222,7 @@ function createSequenceControls(map, attributes){
 
             onAdd: function (map) {
                 // create the control container div with a particular class name
-                // var container = document.getElementByClassName("sequence-control-container");
-
-                // if (!L.DomUtil.hasClass('sequence-control-container')){
-
-                // }
+      
                 var container = L.DomUtil.create('div', 'sequence-control-container');
                 $(container).append('<input class="range-slider" type="range">');
                 // ... initialize other DOM elements, add listeners, etc.
@@ -250,9 +241,6 @@ function createSequenceControls(map, attributes){
 
         first = false;
     }
-    
-    //create range input element (slider)
-    // $('#panel').append('<input class="range-slider" type="range">');
 
     //set slider attributes
     $('.range-slider').attr({
@@ -261,10 +249,6 @@ function createSequenceControls(map, attributes){
         value: 0,
         step: 1
     });
-
-    //below Example 3.4...add skip buttons
-    // $('#panel').append('<button class="skip" id="reverse">Reverse</button>');
-    // $('#panel').append('<button class="skip" id="forward">Skip</button>');
 
     $('#reverse').html('<img src="img/reverse_resize.png">');
     $('#forward').html('<img src="img/forward_resize.png">');
@@ -275,10 +259,7 @@ function createSequenceControls(map, attributes){
     $('.skip').click(function(){
         //get the old index value
         var index = $('.range-slider').val();
-        // var currentPanel;
-        // if ($(".panelContent").text() != ""){
-        //     currentPanel = document.getElementsByTagName('p')[0].innerHTML;
-        // }
+       
         //Step 6: increment or decrement depending on button clicked
         if ($(this).attr('id') == 'forward'){
             index++;
@@ -314,44 +295,31 @@ function createSequenceControls(map, attributes){
 };
 
 
-$('.menu-ui a').on('click', function() {
+$('.dropdown a').on('click', function() {
+
+    //calculate the year using the index from the slider
     var index = $('.range-slider').val();
     index = Number(index);
     var year = 2006 + index;
-    year = year.toString();
-    // console.log("year: " + year);
+   
+    //reset all classnames to 
     clearClassNames();
+
+    //get which conference was selected
     var conf = $(this).data('filter');
+
+    //get the current city to pass in
     var currentPanelCity;
     if ($(".panelContent").text() != ""){
             currentPanelCity = document.getElementsByTagName('p')[0].innerHTML;
     }
 
-    // var attributes = ;
-    // var year;
-    // if ($(".panelContent").text() != ""){
-    //     year = document.getElementsByTagName('p')[2].innerHTML;
-    // }
-    // year = year.substring(16,20);
-        // console.log(year);
+    //update the selected proportional symbols
     updatePropSymbols(map, year, currentPanelCity, conf);
+
+    //set the selected conference to active
     this.className = 'active';
 
-    //then use setOpacity to make certain layers invisible
-
-    // console.log("filter = " + conf);
-    // removeLayers();
-    // getData(map, conf);
-    // var group = [];
-    // map.eachLayer(function(layer){
-    //     console.log(layer.layerPointToLatLng);
-    //      if (layer.feature && layer.feature.properties){
-
-    //         group.push(layer.layerPointToLatLng);
-    //      }  
-    // });
-    
-    // map.fitBounds(group);
 });
 
 
@@ -407,8 +375,9 @@ function getData(map){
 //calculate radius of a proportional symbol
 function calcPropRadius(attValue){
 
-    var scaleFactor = .5;
-    var area = scaleFactor * Math.pow(attValue*100, 2);
+    var scaleFactor = 2500;
+    // var area = scaleFactor * Math.pow(attValue*100, 2);
+    var area = scaleFactor * attValue;
     var radius = Math.sqrt(area/Math.PI);
 
 	return radius;
