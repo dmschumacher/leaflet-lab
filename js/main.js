@@ -54,6 +54,112 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoiZG1zY2h1bWFjaGVyIiwiYSI6ImNpa2g5NjBsNjAxYTF2a2ttcHFmbGFyOXYifQ.wWmDF7mQIq5kv-fCTdCE7g'
 }).addTo(map);
 
+function getCircleValues(map, attribute){
+    //start with min at highest possible and max at lowest possible number
+    var min = Infinity,
+        max = -Infinity;
+
+    map.eachLayer(function(layer){
+        //get the attribute value
+        if (layer.feature){
+            var attributeValue = Number(layer.feature.properties[attribute]);
+
+            //test for min
+            if (attributeValue < min){
+                min = attributeValue;
+            };
+
+            //test for max
+            if (attributeValue > max){
+                max = attributeValue;
+            };
+        };
+    });
+
+    //set mean
+    var mean = (max + min) / 2;
+    //return values as an object
+    return {
+        max: max,
+        mean: mean,
+        min: min
+    };
+};
+
+//Example 3.7 line 1...Update the legend with new attribute
+function updateLegend(map, attribute){
+    //create content for legend
+    var index = $('.range-slider').val();
+    index = Number(index);
+    var year = 2006 + index;
+    var content = "Win Percentage in " + year;
+
+    //replace legend content
+    $('#temporal-legend').html(content);
+
+    //get the max, mean, and min values as an object
+    var circleValues = getCircleValues(map, attribute);
+
+    for (var key in circleValues){
+        //get the radius
+        var radius = calcPropRadius(circleValues[key]);
+
+        //Step 3: assign the cy and r attributes
+        $('#'+key).attr({
+            cy: 60 - radius,
+            r: radius
+        });
+
+        $('#'+key+'-text').text(Math.round(circleValues[key]*100) + "%");
+    };
+};
+
+function createLegend(map, attributes){
+    var LegendControl = L.Control.extend({
+        options: {
+            position: 'bottomright'
+        },
+
+        onAdd: function (map) {
+            // create the control container with a particular class name
+            var container = L.DomUtil.create('div', 'legend-control-container');
+
+            //add temporal legend div to container
+            $(container).append('<div id="temporal-legend">')
+
+            //Step 1: start attribute legend svg string
+             var svg = '<svg id="attribute-legend" width="160px" height="60px">';
+
+            var circles = {
+                max: 20,
+                mean: 40,
+                min: 60
+            };
+
+            //loop to add each circle and text to svg string
+            for (var circle in circles){
+                //circle string
+                svg += '<circle class="legend-circle" id="' + circle + '" fill="#000099" fill-opacity="0.8" stroke="#000000" cx="30"/>';
+
+                //text string
+                svg += '<text id="' + circle + '-text" x="65" y="' + circles[circle] + '"></text>';
+            };
+
+            //close svg string
+            svg += "</svg>";
+
+            //add attribute legend svg to container
+            $(container).append(svg);
+
+            return container;
+        }
+    });
+
+    map.addControl(new LegendControl());
+
+    updateLegend(map, attributes[0]);
+};
+
 
 //function to convert markers to circle markers
 function pointToLayer(feature, latlng, attributes){
@@ -132,7 +238,7 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
     //iterate through all prop symbols to resize and update popup/panel content
     map.eachLayer(function(layer){
         if (layer.feature && layer.feature.properties[attribute]){
-            // console.log("Valid Layer");
+
             //access feature properties
             var props = layer.feature.properties;
 
@@ -285,7 +391,7 @@ function createSequenceControls(map, attributes){
     $('.range-slider').on('input', function(){
 
         var index = $(this).val();
-        console.log("Slider input: " + index);
+
         if ($(".panelContent").text() != ""){
             currentPanel = document.getElementsByTagName('p')[0].innerHTML;
         }
@@ -294,7 +400,7 @@ function createSequenceControls(map, attributes){
     });
 };
 
-
+//fifth interaction operator
 $('.dropdown a').on('click', function() {
 
     //calculate the year using the index from the slider
@@ -315,7 +421,7 @@ $('.dropdown a').on('click', function() {
     }
 
     //update the selected proportional symbols
-    updatePropSymbols(map, year, currentPanelCity, conf);
+    updatePropSymbols(map, year, currentPanelCity, conf); //fifth interaction operator additions here
 
     //set the selected conference to active
     this.className = 'active';
@@ -324,14 +430,12 @@ $('.dropdown a').on('click', function() {
 
 
 function createPropSymbols(data, map, attributes){
-    // console.log(mins);
     //create a Leaflet GeoJSON layer and add it to the map
    L.geoJson(data, {
         pointToLayer: function(feature, latlng){
             return pointToLayer(feature, latlng, attributes);
         }
     }).addTo(map);
-   // console.log("markers: " + markers[0].feature.properties.CITY);
 };
 
 //Extract timestamp headers
@@ -346,7 +450,7 @@ function processData(data){
     for (var attribute in properties){
         //only take attributes with population values
         var val = properties[attribute];
-        // console.log("val = " + val);
+
         if (attribute.indexOf("20") > -1){
             attributes.push(attribute);
         };
@@ -367,6 +471,7 @@ function getData(map){
             //call function to create proportional symbols
             createPropSymbols(response, map, attributes);
             createSequenceControls(map, attributes);
+            createLegend(map, attributes)
             // createMenu();
         }
     });
