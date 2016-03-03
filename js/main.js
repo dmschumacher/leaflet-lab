@@ -160,6 +160,44 @@ function createLegend(map, attributes){
     updateLegend(map, attributes[0]);
 };
 
+// function createLegend(map, attributes){
+   
+//             // create the control container with a particular class name
+//             // var container = L.DomUtil.create('div', 'legend-control-container');
+
+//             //add temporal legend div to container
+//             $('#container').append('<div id="temporal-legend">')
+
+//             //Step 1: start attribute legend svg string
+//              var svg = '<svg id="attribute-legend" width="160px" height="60px">';
+
+//             var circles = {
+//                 max: 20,
+//                 mean: 40,
+//                 min: 60
+//             };
+
+//             //loop to add each circle and text to svg string
+//             for (var circle in circles){
+//                 //circle string
+//                 svg += '<circle class="legend-circle" id="' + circle + '" fill="#000099" fill-opacity="0.8" stroke="#000000" cx="30"/>';
+
+//                 //text string
+//                 svg += '<text id="' + circle + '-text" x="65" y="' + circles[circle] + '"></text>';
+//             };
+
+//             //close svg string
+//             svg += "</svg>";
+
+//             //add attribute legend svg to container
+//             $('#container').append(svg);
+
+//             // return container;
+     
+//     // map.addControl(new LegendControl());
+
+//     updateLegend(map, attributes[0]);
+// };
 
 //function to convert markers to circle markers
 function pointToLayer(feature, latlng, attributes){
@@ -179,12 +217,20 @@ function pointToLayer(feature, latlng, attributes){
     //For each feature, determine its value for the selected attribute
     var attValue = Number(feature.properties[attribute]);
 
+    var madePlayoff = attribute + "_P";
+    // console.log("PLayoffs: " + madePlayoff);
+    if(feature.properties[madePlayoff]){
+        options.weight = 5;
+    }
+
     //Give each feature's circle marker a radius based on its attribute value
     options.radius = calcPropRadius(attValue);
 
     //create circle marker layer
     var layer = L.circleMarker(latlng, options);
 
+    // console.log(layer);
+    // console.log(layer.options.weight);
     //build popup content string
     var popupContent = "<p><b>City:</b> " + feature.properties.CITY + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p>";
 
@@ -224,6 +270,7 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
     //if this function was called from sequence, set "conf" to 
     //the "active" conference. This way if you filter to a division,
     //it will only update the current division
+    
     if (conf == 'Sequence'){ 
 
         conf = document.getElementsByClassName('active')[0].id;
@@ -238,9 +285,20 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
     //iterate through all prop symbols to resize and update popup/panel content
     map.eachLayer(function(layer){
         if (layer.feature && layer.feature.properties[attribute]){
+            
+            console.log(layer.options.weight);
 
+            var madePlayoff = attribute + "_P";
+            // console.log("PLayoffs: " + madePlayoff);
+            
             //access feature properties
             var props = layer.feature.properties;
+
+            layer.options.weight = 1;
+            if(props[madePlayoff]){
+                layer.options.weight = 5;
+            }
+            layer._updateStyle();
 
             //update each feature's radius based on new attribute values
             var radius = calcPropRadius(props[attribute]);
@@ -310,6 +368,8 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
         bounds.push([49.38,-66.94])
         bounds.push([25.82,-124.39]);
     }
+
+    updateLegend(map, attribute);
 
     //fit the map to the specified cities/teams based on coordinates that have
     //been added to the 'bounds' array
@@ -422,7 +482,7 @@ $('.dropdown a').on('click', function() {
 
     //update the selected proportional symbols
     updatePropSymbols(map, year, currentPanelCity, conf); //fifth interaction operator additions here
-
+    updateLegend(map, year);
     //set the selected conference to active
     this.className = 'active';
 
