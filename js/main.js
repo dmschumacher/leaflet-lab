@@ -1,18 +1,13 @@
-//create leaflet map
-//load map tiles
-//find/format data (geocode)
-//load point data into map
-//convert points to circles
+///////////////////////////////////////////////
+//Map of all 32 NFL teams from 2006-2015 seasons
+// winning %s are represented by proportional symbols
+//  teams that made the playoffs are represented in red rather than blue
 //
+//
+//Author: Dan Schumacher
+// Geog 575, Lab 301
+//////////////////////////////////////////////
 
-//Setup Boiler code
-//Get data
-// Setup map tiles
-// Import data onto map
-//setup prop symbols
-// Implement basic functions
-//	zoom
-//	 pan etc
 
 var first = true;
 
@@ -24,11 +19,13 @@ mapbounds.push([25.82,-124.39]);
 var map = L.map('map', {
     center: [39.73, -104.99],
     maxZoom: 8,
-    minZoom: 4
+    minZoom: 4,
+    maxBounds: mapbounds
 });
 
 //set map to show the US on load
-map.fitBounds(mapbounds, {padding: [50,50]});
+// map.fitBounds(mapbounds, {padding: [50,50]});
+map.fitBounds(mapbounds);
 
 //reset class names from the dropdown menu to ''
 function clearClassNames(){
@@ -54,10 +51,39 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoiZG1zY2h1bWFjaGVyIiwiYSI6ImNpa2g5NjBsNjAxYTF2a2ttcHFmbGFyOXYifQ.wWmDF7mQIq5kv-fCTdCE7g'
 }).addTo(map);
 
+function getPanelContent(props, attribute, madePlayoff){
+
+    //add message to panel about making/missing playoffs
+    var playoffText;
+    if (madePlayoff){
+        playoffText = "Made the Playoffs!";
+
+    }else{
+        playoffText = "Missed the Playoffs"
+    }
+
+    var panelContent = "<div id='imagecontainer' class='imagecontainer' value=" + props.CITY + "><img id='image' src='img/" + props.TEAM_NAME + ".png'><p id="+ props.CITY+ " class='panelContent'><h2><value = " + props.CITY + "><p><h1>" + props.TEAM_NAME + "</h1></p><div class = 'year'><p><b>Winning % in " + attribute + ":</b> " + Math.round(props[attribute]*100) + "%</div></p><p>" + playoffText + "</h2></p></div>";
+
+        panelContent += getPanelStandardContent();
+
+    return panelContent;
+}
+
+function getPanelStandardContent(){
+
+    //Always have this text displayed in the panel
+    var standardContent = "<div class='playoff'><img src='img/nfl_logo.jpg'><div class='playoffText'>The success of NFL franchises is often measured by playoff appearances. However, what constitutes a playoff team in the eyes of the National Football League is different than what the casual fan would expect. Rather than selecting the top 12 teams with the highest winning percentage in a season, the NFL playoff rules mandate that at least one team from each of the eight divisions must make a playoff appearance while four 'Wild Card' teams also make the postseason. This means that occasionally a team sneaks into the postseason with a less than stellar record simply because their division was weak that year. This is often seen as unfair to rival teams who had a good season but did not make the playoffs due to a great team winning their division. <h6><p>Sources: nfl.com, leaflet.com, sportslogos.net, w3schools.com</p><p>Author: Dan Schumacher</p></h6></div></div>";
+
+    return standardContent;
+}
+
 function getCircleValues(map, attribute){
     //start with min at highest possible and max at lowest possible number
     var min = Infinity,
         max = -Infinity;
+
+    var playoffTotal = 0;
+    var playoff_ID = attribute + "_P";
 
     map.eachLayer(function(layer){
         //get the attribute value
@@ -73,8 +99,16 @@ function getCircleValues(map, attribute){
             if (attributeValue > max){
                 max = attributeValue;
             };
+
+            //compute average wins for playoff teams
+            if(layer.feature.properties[playoff_ID]){
+                playoffTotal += attributeValue;
+            };
         };
     });
+
+    //compute average wins for playoff teams
+    var playoffMean = playoffTotal  / 12;
 
     //set mean
     var mean = (max + min) / 2;
@@ -82,20 +116,23 @@ function getCircleValues(map, attribute){
     return {
         max: max,
         mean: mean,
-        min: min
+        min: min,
+        playoffMean: playoffMean
     };
 };
 
 //Example 3.7 line 1...Update the legend with new attribute
 function updateLegend(map, attribute){
     //create content for legend
-    var index = $('.range-slider').val();
-    index = Number(index);
-    var year = 2006 + index;
-    var content = "Win Percentage in " + year;
+    var content = "Overall Win Percentage in " + attribute;
 
     //replace legend content
     $('#temporal-legend').html(content);
+
+    //add new subheader for playoff teams
+    var subheader = "Playoff Teams and their Average Win Percentage in " + attribute;
+
+    $('#subheader').html(subheader);
 
     //get the max, mean, and min values as an object
     var circleValues = getCircleValues(map, attribute);
@@ -112,6 +149,17 @@ function updateLegend(map, attribute){
 
         $('#'+key+'-text').text(Math.round(circleValues[key]*100) + "%");
     };
+
+    $('#playoffMean').attr({
+        cy: 30
+    });
+};
+
+function updateTitle(attribute){
+    
+    //keep the title up to date
+    var content = "NFL Team Wins " + attribute;
+    $('#title').html(content);
 };
 
 function createLegend(map, attributes){
@@ -128,28 +176,39 @@ function createLegend(map, attributes){
             $(container).append('<div id="temporal-legend">')
 
             //Step 1: start attribute legend svg string
-             var svg = '<svg id="attribute-legend" width="160px" height="60px">';
+            var svg = '<svg id="attribute-legend" width="300" height="75px">';
+            var playoffSvg = '<svg id="attribute-legend2" width="300px" height="100px">';
 
             var circles = {
                 max: 20,
                 mean: 40,
-                min: 60
+                min: 60,
+                playoffMean: 35
             };
 
             //loop to add each circle and text to svg string
             for (var circle in circles){
-                //circle string
-                svg += '<circle class="legend-circle" id="' + circle + '" fill="#000099" fill-opacity="0.8" stroke="#000000" cx="30"/>';
 
-                //text string
-                svg += '<text id="' + circle + '-text" x="65" y="' + circles[circle] + '"></text>';
+                //if this is the playoff average value, add it to a separate svg
+                if (circle == "playoffMean"){
+                        //circle string
+                    playoffSvg += '<circle class="legend-circle2" id="' + circle + '" fill="#cc0000" fill-opacity="0.8" stroke="#000000" cx="30"/><text id="' + circle + '-text" x="65" y="' + circles[circle] + '"></text>';
+                //otherwise just add it to the normal svg
+                }else{
+                    svg += '<circle class="legend-circle" id="' + circle + '" fill="#000066" fill-opacity="0.8" stroke="#000000" cx="30"/><text id="' + circle + '-text" x="65" y="' + circles[circle] + '"></text>';
+                }                
             };
 
             //close svg string
             svg += "</svg>";
+            playoffSvg += "</svg>";
 
             //add attribute legend svg to container
             $(container).append(svg);
+            
+            //add new section to legend with average playoff win %
+            $(container).append('<div id="subheader">')
+            $(container).append(playoffSvg);
 
             return container;
         }
@@ -157,47 +216,11 @@ function createLegend(map, attributes){
 
     map.addControl(new LegendControl());
 
+    //update all the things
     updateLegend(map, attributes[0]);
+    updateTitle(attributes[0]);
 };
 
-// function createLegend(map, attributes){
-   
-//             // create the control container with a particular class name
-//             // var container = L.DomUtil.create('div', 'legend-control-container');
-
-//             //add temporal legend div to container
-//             $('#container').append('<div id="temporal-legend">')
-
-//             //Step 1: start attribute legend svg string
-//              var svg = '<svg id="attribute-legend" width="160px" height="60px">';
-
-//             var circles = {
-//                 max: 20,
-//                 mean: 40,
-//                 min: 60
-//             };
-
-//             //loop to add each circle and text to svg string
-//             for (var circle in circles){
-//                 //circle string
-//                 svg += '<circle class="legend-circle" id="' + circle + '" fill="#000099" fill-opacity="0.8" stroke="#000000" cx="30"/>';
-
-//                 //text string
-//                 svg += '<text id="' + circle + '-text" x="65" y="' + circles[circle] + '"></text>';
-//             };
-
-//             //close svg string
-//             svg += "</svg>";
-
-//             //add attribute legend svg to container
-//             $('#container').append(svg);
-
-//             // return container;
-     
-//     // map.addControl(new LegendControl());
-
-//     updateLegend(map, attributes[0]);
-// };
 
 //function to convert markers to circle markers
 function pointToLayer(feature, latlng, attributes){
@@ -206,7 +229,7 @@ function pointToLayer(feature, latlng, attributes){
 
     //create marker options
     var options = {
-        fillColor: "#000099",
+        fillColor: "#000066",
         color: "#000",
         weight: 1,
         opacity: 1,
@@ -217,10 +240,15 @@ function pointToLayer(feature, latlng, attributes){
     //For each feature, determine its value for the selected attribute
     var attValue = Number(feature.properties[attribute]);
 
-    var madePlayoff = attribute + "_P";
-    // console.log("PLayoffs: " + madePlayoff);
-    if(feature.properties[madePlayoff]){
-        options.weight = 5;
+    //There's columns in .geojson of the format "year_P"
+    //if the value is one, the team made the playoffs that year
+    //ie "2006_P" for the chicago bears would be 1 because they went to the playoffs in 2006
+    var madePlayoffID = attribute + "_P";
+    var madePlayoff = feature.properties[madePlayoffID];
+  
+    //if the team made the playoffs this year turn that circle red
+    if(madePlayoff){
+        options.fillColor = "#cc0000";
     }
 
     //Give each feature's circle marker a radius based on its attribute value
@@ -229,14 +257,10 @@ function pointToLayer(feature, latlng, attributes){
     //create circle marker layer
     var layer = L.circleMarker(latlng, options);
 
-    // console.log(layer);
-    // console.log(layer.options.weight);
     //build popup content string
-    var popupContent = "<p><b>City:</b> " + feature.properties.CITY + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p>";
+    var popupContent = "<p>" +feature.properties.CITY + ", " + feature.properties.STATE + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p>";
 
-    //create panel content
-    var panelContent = "<div class = 'panelContent'><value = " + feature.properties.CITY + "><p><b>City:</b> " + feature.properties.CITY  + "</p><p><b>Team:</b> " + feature.properties.TEAM_NAME + "</p><div class = 'year'><p><b>Winning % in " + attribute + ":</b> " + feature.properties[attribute]*100 + "%</div></p></div>";
-
+    var panelContent = getPanelContent(feature.properties, attribute, madePlayoff);
 
     //bind the popup to the circle marker
     layer.bindPopup(popupContent, {
@@ -254,9 +278,7 @@ function pointToLayer(feature, latlng, attributes){
             this.closePopup();
         },
         click: function(){
-            //prevent clutter by clearing panel and re-adding panel content on each click
-            $( ".panelContent" ).remove();
-            $('#panel').append(panelContent);
+            $('#panel').html(panelContent);
         }
     });
 
@@ -270,7 +292,6 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
     //if this function was called from sequence, set "conf" to 
     //the "active" conference. This way if you filter to a division,
     //it will only update the current division
-    
     if (conf == 'Sequence'){ 
 
         conf = document.getElementsByClassName('active')[0].id;
@@ -286,19 +307,17 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
     map.eachLayer(function(layer){
         if (layer.feature && layer.feature.properties[attribute]){
             
-            console.log(layer.options.weight);
-
-            var madePlayoff = attribute + "_P";
-            // console.log("PLayoffs: " + madePlayoff);
-            
             //access feature properties
             var props = layer.feature.properties;
 
-            layer.options.weight = 1;
-            if(props[madePlayoff]){
-                layer.options.weight = 5;
+            var madePlayoffID = attribute + "_P";
+            var madePlayoff = props[madePlayoffID];
+
+            layer.options.fillColor = "#000066";
+            if(madePlayoff){
+                layer.options.fillColor = "#cc0000"; 
             }
-            layer._updateStyle();
+            layer._updateStyle();//kind of a hack, but it works
 
             //update each feature's radius based on new attribute values
             var radius = calcPropRadius(props[attribute]);
@@ -318,21 +337,23 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
                   
             }else{
                 layer.setRadius(0);
-     
             }
 
             //update popup content
-            var popupContent = "<p><b>City:</b> " + props.CITY + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p>";
+            var popupContent = "<p>" + props.CITY + ", " + props.STATE + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p>";
 
-            //update panel content
-            var panelContent = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winnning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
+            var panelContent = getPanelContent(props, attribute, madePlayoff);
 
-            //if this panel content is for the same city that is currently in the panel, store it in a variable for later
+            //if this panel content is for the same team that is currently in the panel, store it in a variable for later
             if (panelContent.indexOf(currentPanel) != -1){
-
-                updatedPanel = "<div class = 'panelContent'><value = " + props.CITY + "><p><b>City:</b> " + props.CITY  + "</p><p><b>Team:</b> " + props.TEAM_NAME + "</p><p><b>Winning % in " + attribute + ":</b> " + props[attribute]*100 + "%</p></div>";
+                updatePanel = panelContent;
             }
-       
+
+            //If the circle is on the smaller side, bring it to the front so it isn't covered by larger circles
+            if (props[attribute] <= 0.5){
+                layer.bringToFront();
+            }
+
             //replace the layer popup
             layer.bindPopup(popupContent, {
                 offset: new L.Point(0,-radius)
@@ -349,18 +370,15 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
 
                 },
                 click: function(){
-                    //prevent clutter by clearing panel and re-adding panel content on each click
-                    $( ".panelContent" ).remove();
-                    $('#panel').append(panelContent);
+                    $('#panel').html(panelContent);
                 }
             });
         };
     });
 
     //if the panel isn't blank, remove the current text there, and replace it with the updated information with the new timestamp
-    if ($(".panelContent").text() != ""){
-        $( ".panelContent" ).remove();
-        $('#panel').append(updatedPanel);
+    if (typeof document.getElementsByTagName('h1')[0] != 'undefined'){
+        $('#panel').html(updatePanel);
     }
     
     //if we want all the teams to show up add the coordinates to the array
@@ -370,6 +388,7 @@ function updatePropSymbols(map, attribute, currentPanel, conf){
     }
 
     updateLegend(map, attribute);
+    updateTitle(attribute);
 
     //fit the map to the specified cities/teams based on coordinates that have
     //been added to the 'bounds' array
@@ -440,8 +459,8 @@ function createSequenceControls(map, attributes){
         //Step 8: update slider
         $('.range-slider').val(index);
 
-        if ($(".panelContent").text() != ""){
-            currentPanel = document.getElementsByTagName('p')[0].innerHTML;
+        if (typeof document.getElementsByTagName('h1')[0] != 'undefined'){
+            currentPanel = document.getElementsByTagName('h1')[0].innerHTML;//I'm 100% there's a better way to do this, but it works!
         }
         //call function to update proportional symbols and panel
         updatePropSymbols(map, attributes[index], currentPanel, "Sequence");
@@ -452,8 +471,8 @@ function createSequenceControls(map, attributes){
 
         var index = $(this).val();
 
-        if ($(".panelContent").text() != ""){
-            currentPanel = document.getElementsByTagName('p')[0].innerHTML;
+        if (typeof document.getElementsByTagName('h1')[0] != 'undefined'){
+            currentPanel = document.getElementsByTagName('h1')[0].innerHTML;
         }
         //call function to update proportional symbols and panel
         updatePropSymbols(map, attributes[index], currentPanel, "Sequence");
@@ -474,15 +493,19 @@ $('.dropdown a').on('click', function() {
     //get which conference was selected
     var conf = $(this).data('filter');
 
-    //get the current city to pass in
-    var currentPanelCity;
-    if ($(".panelContent").text() != ""){
-            currentPanelCity = document.getElementsByTagName('p')[0].innerHTML;
+    //get the current team to pass in
+    var currentPanelTeam;
+    if (typeof document.getElementsByTagName('h1')[0] != 'undefined'){
+            currentPanelTeam = document.getElementsByTagName('h1')[0].innerHTML;
     }
 
     //update the selected proportional symbols
-    updatePropSymbols(map, year, currentPanelCity, conf); //fifth interaction operator additions here
+    updatePropSymbols(map, year, currentPanelTeam, conf); //fifth interaction operator additions here
     updateLegend(map, year);
+
+    //set the displayed text in the button to be the selected division
+    document.getElementById('filterButton').value = document.getElementById(conf).innerHTML;
+
     //set the selected conference to active
     this.className = 'active';
 
@@ -532,7 +555,7 @@ function getData(map){
             createPropSymbols(response, map, attributes);
             createSequenceControls(map, attributes);
             createLegend(map, attributes)
-            // createMenu();
+            $('#panel').html(getPanelStandardContent());
         }
     });
 };
